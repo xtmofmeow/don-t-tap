@@ -19,7 +19,7 @@ button{font:inherit;cursor:pointer;-webkit-tap-highlight-color:transparent}
 
 #game{
   position:relative;width:100vw;height:100vh;overflow:hidden;
-  background:#3b2929 url("assets/cozy_room_background_v2.png?v=9") center bottom/cover no-repeat;
+  background:#3b2929 url("assets/cozy_room_background.png?v=9") center bottom/cover no-repeat;
 }
 #game::after{
   content:"";position:absolute;inset:0;z-index:1;pointer-events:none;
@@ -279,28 +279,153 @@ body.chaos50 #tapButton{filter:drop-shadow(0 0 7px rgba(255,125,150,.28));}
 </style>
 
 
-<style id="happy-visible-fix">
-#levelRabbit{
-  display:block!important;
-  visibility:visible!important;
-  opacity:1!important;
-  width:150px!important;
-  height:130px!important;
-  max-width:150px!important;
-  max-height:130px!important;
-  object-fit:contain!important;
-  image-rendering:pixelated!important;
-  margin:8px auto 0!important;
-  position:relative!important;
-  z-index:5!important;
+<style id="tap-selection-style">
+#tapChoiceModal{
+  position:absolute;inset:0;z-index:75;display:none;align-items:center;justify-content:center;
+  background:rgba(28,17,18,.72);
 }
-#levelModal .card{overflow:visible!important;}
+.tapChoiceCard{
+  width:min(720px,92vw);max-height:90vh;overflow:auto;
+  padding:24px 24px 28px;text-align:center;
+}
+.tapChoiceTitle{
+  font-family:"Press Start 2P";font-size:17px;color:#c86473;
+  text-shadow:2px 2px #eab1a0;margin:8px 0 10px;
+}
+.tapChoiceSub{font-size:18px;color:#63453e;margin:0 0 18px}
+.tapChoices{
+  display:grid;grid-template-columns:repeat(5,1fr);gap:14px;align-items:start;
+}
+.tapChoice{
+  border:3px solid #8a5b48;background:#f7dfbd;padding:10px 6px 12px;
+  box-shadow:4px 5px 0 var(--shadow);min-height:185px;
+}
+.tapChoice.selected{
+  border-color:#c85f72;box-shadow:0 0 0 3px #f0a3ad,4px 7px 0 var(--shadow);
+  background:#f9e8ce;
+}
+.tapPreview{
+  position:relative!important;left:auto!important;top:auto!important;
+  transform:none!important;display:block!important;margin:2px auto 13px;
+  width:100px!important;height:100px!important;
+  pointer-events:none!important;
+}
+.tapChoiceName{
+  font-family:"Press Start 2P";font-size:7px;color:#603c3a;line-height:1.5;
+}
+.tapChoose{
+  margin-top:9px!important;min-width:0!important;width:100%;
+  padding:9px 5px!important;font-size:8px!important;
+}
+#tapChoiceConfirm{margin-top:18px;min-width:230px}
+@media(max-width:700px){
+  .tapChoiceCard{padding:18px 12px 22px}
+  .tapChoices{grid-template-columns:repeat(2,1fr);gap:10px}
+  .tapChoice{min-height:165px}
+  .tapPreview{width:86px!important;height:86px!important}
+  .tapChoiceTitle{font-size:13px}
+  .tapChoiceSub{font-size:15px}
+}
 </style>
+
+
+<style id="real-tap-assets-and-themes">
+/* Real pixel-art TAP assets */
+#tapButton{
+  background-color:transparent!important;
+  background-repeat:no-repeat!important;
+  background-position:center!important;
+  background-size:contain!important;
+  border:0!important;
+  box-shadow:none!important;
+  width:150px!important;height:150px!important;
+  border-radius:0!important;
+  color:#fff6e8!important;
+  text-shadow:2px 3px 0 rgba(70,35,38,.75)!important;
+  font-family:"Press Start 2P"!important;
+  font-size:17px!important;
+}
+#tapButton::after{display:none!important}
+#tapButton.tap-style-1{background-image:url("assets/tap_bow.png?v=20260813")!important}
+#tapButton.tap-style-2{background-image:url("assets/tap_heart.png?v=20260813")!important}
+#tapButton.tap-style-3{background-image:url("assets/tap_flower.png?v=20260813")!important}
+#tapButton.tap-style-4{background-image:url("assets/tap_star.png?v=20260813")!important}
+#tapButton.tap-style-5{background-image:url("assets/tap_bunny.png?v=20260813")!important}
+
+/* Selection previews use the same real assets. */
+.tapPreview{
+  background-color:transparent!important;
+  background-repeat:no-repeat!important;
+  background-position:center!important;
+  background-size:contain!important;
+  border:0!important;
+  box-shadow:none!important;
+  border-radius:0!important;
+  color:transparent!important;
+  text-shadow:none!important;
+  width:120px!important;height:120px!important;
+}
+.tapPreview.tap-style-1{background-image:url("assets/tap_bow.png?v=20260813")!important}
+.tapPreview.tap-style-2{background-image:url("assets/tap_heart.png?v=20260813")!important}
+.tapPreview.tap-style-3{background-image:url("assets/tap_flower.png?v=20260813")!important}
+.tapPreview.tap-style-4{background-image:url("assets/tap_star.png?v=20260813")!important}
+.tapPreview.tap-style-5{background-image:url("assets/tap_bunny.png?v=20260813")!important}
+
+/* Five matching trap themes: deliberately similar enough to confuse the eye. */
+.trap.dynamic-trap.theme-1{
+  background:#b95d73!important;border-color:#6d3445!important;
+  color:#ffe6d6!important;
+  box-shadow:0 6px 0 #3e2029,inset 0 0 0 4px #e5a1a7!important;
+}
+.trap.dynamic-trap.theme-1::after{border-color:#f2b5ba!important}
+
+.trap.dynamic-trap.theme-2{
+  background:#d87d8b!important;border-color:#82414d!important;
+  color:#fff1dc!important;
+  box-shadow:0 6px 0 #49262d,inset 0 0 0 4px #ffd0c9!important;
+}
+.trap.dynamic-trap.theme-2::after{border-color:#ffe1d4!important}
+
+.trap.dynamic-trap.theme-3{
+  background:#b86a78!important;border-color:#5c303c!important;
+  color:#ffe9c9!important;
+  box-shadow:0 6px 0 #342027,inset 0 0 0 4px #e7a3ad!important;
+}
+.trap.dynamic-trap.theme-3::after{border-color:#f6c0b9!important}
+
+.trap.dynamic-trap.theme-4{
+  background:#d59a68!important;border-color:#704733!important;
+  color:#fff3cf!important;
+  box-shadow:0 6px 0 #3c2822,inset 0 0 0 4px #f0c59b!important;
+}
+.trap.dynamic-trap.theme-4::after{border-color:#ffe0b4!important}
+
+.trap.dynamic-trap.theme-5{
+  background:#80617c!important;border-color:#432c45!important;
+  color:#ffe8da!important;
+  box-shadow:0 6px 0 #281b2b,inset 0 0 0 4px #cda1bd!important;
+}
+.trap.dynamic-trap.theme-5::after{border-color:#e9c3d7!important}
+
+/* Tiny theme cue on the HUD so the player knows which TAP style is equipped,
+   without making the theme obvious enough to remove the intended confusion. */
+.tapThemeBadge{
+  position:absolute;right:18px;bottom:78px;z-index:32;
+  font-family:"Press Start 2P";font-size:6px;color:#f4dfc5;
+  background:rgba(57,31,33,.78);border:2px solid #8d5a4b;
+  padding:6px 8px;box-shadow:3px 3px 0 #241719;
+}
+@media(max-width:700px){
+  #tapButton{width:124px!important;height:124px!important;font-size:13px!important}
+  .tapPreview{width:96px!important;height:96px!important}
+}
+</style>
+
 </head>
 <body>
 <div id="game">
   <div id="dangerPulse"></div>
-  <img id="plant" class="decor" src="assets/happy_v2.png?v=20260813" alt="">
+  <img id="plant" class="decor" src="assets/happy_clean.png?v=10" alt="">
   <img id="bow" class="decor" src="assets/bow.png?v=9" alt="">
   <img id="badge" class="decor" src="assets/badge.png?v=9" alt="">
 
@@ -314,6 +439,7 @@ body.chaos50 #tapButton{filter:drop-shadow(0 0 7px rgba(255,125,150,.28));}
   <button id="soundToggle">♫ OFF</button>
   <div id="hint">TAP THE PINK BUTTON · DON'T TAP THE RABBITS OR X</div>
   <button id="tapButton">TAP</button>
+  <div id="tapThemeBadge" class="tapThemeBadge">TAP STYLE 1</div>
   <div id="combo">COMBO x0</div>
   <div id="levelFlash"></div>
 
@@ -346,13 +472,49 @@ body.chaos50 #tapButton{filter:drop-shadow(0 0 7px rgba(255,125,150,.28));}
   </section>
 
   <!-- LEVEL UP -->
-  <section id="levelModal" style="display:none">
+  
+<section id="tapChoiceModal">
+  <div class="parchment tapChoiceCard">
+    <div class="tapChoiceTitle">LEVEL 10 · CHOOSE YOUR TAP</div>
+    <p class="tapChoiceSub">Pick your favorite button before the next stage.</p>
+    <div class="tapChoices">
+      <div class="tapChoice" data-style="1">
+        <button class="tapPreview tap-style-1">TAP</button>
+        <div class="tapChoiceName">ROSE<br>CLASSIC</div>
+        <button class="btn tapChoose" data-style="1">CHOOSE</button>
+      </div>
+      <div class="tapChoice" data-style="2">
+        <button class="tapPreview tap-style-2">TAP</button>
+        <div class="tapChoiceName">CANDY<br>HEART</div>
+        <button class="btn tapChoose" data-style="2">CHOOSE</button>
+      </div>
+      <div class="tapChoice" data-style="3">
+        <button class="tapPreview tap-style-3">TAP</button>
+        <div class="tapChoiceName">BERRY<br>NIGHT</div>
+        <button class="btn tapChoose" data-style="3">CHOOSE</button>
+      </div>
+      <div class="tapChoice" data-style="4">
+        <button class="tapPreview tap-style-4">TAP</button>
+        <div class="tapChoiceName">PEACH<br>LATTE</div>
+        <button class="btn tapChoose" data-style="4">CHOOSE</button>
+      </div>
+      <div class="tapChoice" data-style="5">
+        <button class="tapPreview tap-style-5">TAP</button>
+        <div class="tapChoiceName">PLUM<br>MOON</div>
+        <button class="btn tapChoose" data-style="5">CHOOSE</button>
+      </div>
+    </div>
+    <button id="tapChoiceConfirm" class="btn" disabled>CONTINUE TO LEVEL 10</button>
+  </div>
+</section>
+
+<section id="levelModal" style="display:none">
     <div class="parchment levelCard">
       <img class="levelBow" src="assets/bow.png?v=9" alt="">
       <div class="levelUp">✦ LEVEL UP! ✦</div>
       <div id="levelName" class="levelNum">LEVEL 2</div>
       <div id="levelText" class="levelText"><b>Lovely!</b><br>Keep going!</div>
-      <img id="levelRabbit" class="levelRabbit" src="assets/happy_v2.png?v=20260813" alt="">
+      <img id="levelRabbit" class="levelRabbit" src="assets/happy_clean.png?v=10" alt="">
       <div style="font-family:'Press Start 2P';font-size:7px;color:#765047">TAP TO CONTINUE</div>
     </div>
   </section>
@@ -416,6 +578,47 @@ function updateTapStyle(){
   tap.classList.remove('tap-style-1','tap-style-2','tap-style-3','tap-style-4','tap-style-5');
   tap.classList.add('tap-style-'+style);
 }
+let selectedTapStyle=Number(localStorage.getItem('dontTapStyle')||1);
+
+
+function applyTapStyle(style){
+  selectedTapStyle=Math.max(1,Math.min(5,Number(style)||1));
+  tap.classList.remove('tap-style-1','tap-style-2','tap-style-3','tap-style-4','tap-style-5');
+  tap.classList.add('tap-style-'+selectedTapStyle);
+  localStorage.setItem('dontTapStyle',String(selectedTapStyle));
+  const badge=$('tapThemeBadge');
+  if(badge)badge.textContent='TAP STYLE '+selectedTapStyle;
+  document.querySelectorAll('.dynamic-trap').forEach(t=>{
+    t.classList.remove('theme-1','theme-2','theme-3','theme-4','theme-5');
+    t.classList.add('theme-'+selectedTapStyle);
+  });
+}
+function showTapChoice(){
+  gameRunning=false;
+  clearInterval(timerId);
+  clearInterval(tapDartTimer);
+  $('tapChoiceModal').style.display='flex';
+  document.querySelectorAll('.tapChoice').forEach(c=>{
+    c.classList.toggle('selected',Number(c.dataset.style)===selectedTapStyle);
+  });
+  $('tapChoiceConfirm').disabled=false;
+}
+function confirmTapChoice(){
+  applyTapStyle(selectedTapStyle);
+  $('tapChoiceModal').style.display='none';
+  gameRunning=true;
+  timeLeft=timeForLevel(10);
+  updateHud();
+  clearInterval(timerId);
+  timerId=setInterval(tick,100);
+  clearInterval(tapDartTimer);
+  tapDartTimer=setInterval(()=>{
+    if(gameRunning && level>=12)moveTap();
+  },level>=20?520:level>=16?720:980);
+  tap.style.display='block';
+  moveTap();
+  startRabbitWave();
+}
 function moveTap(){
   const w=innerWidth,h=innerHeight;
   const margin=level<12?Math.min(120,w*.16):Math.min(78,w*.09);
@@ -431,22 +634,23 @@ function moveTap(){
     tries++;
   }while(
     level>=12 &&
-    Math.hypot(x-oldX,y-oldY)<Math.min(level>=20?300:240,w*.32) &&
+    Math.hypot(x-oldX,y-oldY)<Math.min(level>=20?260:185,w*.27) &&
     tries<40
   );
 
   let speed;
-  if(level<12)speed=.18;
-  else if(level<20)speed=Math.max(.09,.18-(level-12)*.009);
-  else speed=Math.max(.035,.10-(level-20)*.0028);
+  if(level<12)speed=.22;
+  else if(level<20)speed=Math.max(.15,.22-(level-12)*.007);
+  else if(level<30)speed=Math.max(.115,.165-(level-20)*.0025);
+  else speed=Math.max(.085,.14-(level-30)*.0015);
 
   tap.style.transition=`left ${speed}s cubic-bezier(.12,1.55,.28,1),top ${speed}s cubic-bezier(.12,1.55,.28,1),transform ${Math.max(.05,speed*.6)}s`;
   tap.style.left=x+'px';
   tap.style.top=y+'px';
 
   if(level>=12){
-    const rot=(Math.random()*18)-9;
-    const scale=level>=50 ? .84+Math.random()*.32 : .94+Math.random()*.12;
+    const rot=level>=20 ? (Math.random()*16)-8 : (Math.random()*8)-4;
+    const scale=level>=50 ? .84+Math.random()*.32 : level>=20 ? .96+Math.random()*.08 : .98+Math.random()*.04;
     tap.style.transform=`translate(-50%,-50%) rotate(${rot}deg) scale(${scale})`;
     setTimeout(()=>{
       if(gameRunning)tap.style.transform='translate(-50%,-50%) rotate(0deg) scale(1)';
@@ -502,12 +706,12 @@ function startGame(){
   clearThings();resetAudio();unlockMusic();
   setPlaying(true);
   $('startScreen').style.display='none';$('gameOverScreen').style.display='none';$('howScreen').style.display='none';
-  tap.style.display='block';moveTap();updateHud();
+  tap.style.display='block';applyTapStyle(selectedTapStyle);moveTap();updateHud();
   clearInterval(timerId);timerId=setInterval(tick,100);
   clearInterval(tapDartTimer);
   tapDartTimer=setInterval(()=>{
     if(gameRunning && level>=12) moveTap();
-  }, level>=20 ? 520 : level>=16 ? 720 : 980);
+  }, level>=30 ? 900 : level>=20 ? 1050 : level>=16 ? 1250 : 1450);
 }
 function tick(){
   if(!gameRunning)return;
@@ -538,8 +742,15 @@ function correctTap(){
   timeLeft=timeForLevel(level)+(combo>=3?.25:0)+(combo>=7?.15:0);
   playSound('sndTap');
   moveTap();
-  if(level!==old){clearThings();showLevel(level)}
-  else createTrapWave();
+  if(level!==old){
+    clearThings();
+    if(level===10){
+      playSound('sndLevel');
+      showTapChoice();
+    }else{
+      showLevel(level);
+    }
+  }else createTrapWave();
   updateHud();
 }
 function createTrapWave(){
@@ -558,7 +769,7 @@ function createTrapWave(){
 }
 function createTrap(){
   const t=document.createElement('button');
-  t.className='trap dynamic-trap';
+  t.className='trap dynamic-trap theme-'+selectedTapStyle;
   t.textContent='×';
 
   let x,y,tries=0;
@@ -664,8 +875,7 @@ function showLevel(l){
   const c=levelCopy[l]||['Level '+l+'!','Keep going!'];
   $('levelName').textContent='LEVEL '+l;
   $('levelText').innerHTML='<b>'+c[0]+'</b><br>'+c[1];
-  $('levelRabbit').src=A+'happy_v2.png?v=20260813';
-  $('levelRabbit').onerror=()=>{$('levelRabbit').style.display='none';};
+  $('levelRabbit').src=(l%2)?A+'happy.png?v=9':A+'idle_front.png?v=9';
   $('levelModal').style.display='flex';
   playSound('sndLevel');
   const flash=document.createElement('div');flash.style.cssText='position:absolute;inset:0;background:radial-gradient(circle,#fff5df,transparent 58%);z-index:59;animation:levelFlash .6s steps(4) forwards;pointer-events:none';$('game').appendChild(flash);
@@ -685,6 +895,23 @@ function endGame(reason){
   $('finalScore').textContent=score;$('bestScore').textContent=best();
   $('gameOverScreen').style.display='flex';setPlaying(false);updateHud();
 }
+
+document.querySelectorAll('.tapChoose').forEach(btn=>{
+  btn.addEventListener('click',e=>{
+    e.stopPropagation();
+    selectedTapStyle=Number(btn.dataset.style);
+    applyTapStyle(selectedTapStyle);
+    document.querySelectorAll('.tapChoice').forEach(c=>{
+      c.classList.toggle('selected',Number(c.dataset.style)===selectedTapStyle);
+    });
+  });
+});
+$('tapChoiceConfirm').onclick=e=>{
+  e.stopPropagation();
+  confirmTapChoice();
+};
+applyTapStyle(selectedTapStyle);
+
 $('tapButton').onclick=e=>{e.stopPropagation();correctTap()};
 $('startButton').onclick=()=>{resetAudio();startGame()};
 $('playAgainButton').onclick=()=>{resetAudio();startGame()};
@@ -701,6 +928,7 @@ $('soundToggle').onclick=async()=>{
   document.addEventListener(ev,()=>{if(gameRunning&&musicOn)unlockMusic()},{passive:true});
 });
 document.addEventListener('visibilitychange',()=>{if(!document.hidden&&gameRunning&&musicOn)unlockMusic()});
+document.addEventListener('keydown',e=>{if(e.key==='Escape' && $('tapChoiceModal').style.display==='flex')e.preventDefault()});
 
 updateHud();
 </script>
