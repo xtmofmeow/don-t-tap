@@ -48,7 +48,7 @@ button{font:inherit;cursor:pointer;-webkit-tap-highlight-color:transparent}
   position:absolute;inset:0;z-index:60;display:flex;align-items:center;justify-content:center;
   background:rgba(29,18,19,.30);
 }
-#startScreen{align-items:center;justify-content:flex-start;padding-left:8vw}
+#startScreen{align-items:center;justify-content:center;padding-left:0}
 .menuCard{
   width:min(350px,82vw);padding:22px 26px 25px;text-align:center;
 }
@@ -188,11 +188,101 @@ body.playing #dangerPulse{animation:none}
   50%{opacity:.45;box-shadow:inset 0 0 0 5px rgba(215,123,137,.12)}
 }
 </style>
+
+<style id="tap-options-and-chaos">
+/* START SCREEN: always centered on desktop too */
+#startScreen{justify-content:center!important;padding-left:0!important}
+
+/* TAP BUTTON VARIANTS — change automatically with progression */
+#tapButton.tap-style-1{
+  background:radial-gradient(circle at 34% 24%,#ffe1df 0 5%,transparent 6%),#d87d8d!important;
+  border-color:#713d49!important;box-shadow:0 8px 0 #47262e,inset 0 0 0 6px #efabb3!important;
+}
+#tapButton.tap-style-2{
+  background:radial-gradient(circle at 30% 22%,#fff8e9 0 6%,transparent 7%),#e7a1a9!important;
+  border-color:#844854!important;box-shadow:0 8px 0 #4d2a31,inset 0 0 0 6px #ffd2cb!important;
+}
+#tapButton.tap-style-3{
+  background:radial-gradient(circle at 35% 25%,#ffe8d0 0 5%,transparent 6%),#b96f7f!important;
+  border-color:#56323b!important;box-shadow:0 8px 0 #342027,inset 0 0 0 6px #e2a3aa!important;
+}
+#tapButton.tap-style-4{
+  background:radial-gradient(circle at 35% 22%,#fff4df 0 5%,transparent 6%),#c98f86!important;
+  border-color:#70443d!important;box-shadow:0 8px 0 #3d2825,inset 0 0 0 6px #efc3ad!important;
+}
+#tapButton.tap-style-5{
+  background:radial-gradient(circle at 32% 20%,#fff8e9 0 5%,transparent 6%),#9f6d7c!important;
+  border-color:#492a36!important;box-shadow:0 8px 0 #281923,inset 0 0 0 6px #d99ca8!important;
+}
+#tapButton.tap-style-3::before,
+#tapButton.tap-style-4::before,
+#tapButton.tap-style-5::before{
+  content:"✦";
+  position:absolute;left:17px;top:12px;color:#ffe4c8;font-size:12px;
+}
+
+/* X TRAPS: progressively more alive after level 20 */
+.trap.dynamic-trap{
+  transform-origin:center;
+  will-change:transform,left,top;
+}
+.trap.dynamic-trap.pulse20{
+  animation:trapPulse20 .72s steps(5) infinite;
+}
+.trap.dynamic-trap.pulse35{
+  animation:trapPulse35 .56s steps(6) infinite;
+}
+@keyframes trapPulse20{
+  0%,100%{transform:translate(-50%,-50%) scale(.86) rotate(-3deg)}
+  50%{transform:translate(-50%,-50%) scale(1.16) rotate(3deg)}
+}
+@keyframes trapPulse35{
+  0%{transform:translate(-50%,-50%) scale(.72) rotate(-8deg)}
+  25%{transform:translate(-50%,-50%) scale(1.25) rotate(7deg)}
+  50%{transform:translate(-50%,-50%) scale(.9) rotate(-4deg)}
+  75%{transform:translate(-50%,-50%) scale(1.32) rotate(9deg)}
+  100%{transform:translate(-50%,-50%) scale(.72) rotate(-8deg)}
+}
+.trap.dynamic-trap::after{
+  animation:trapDash .8s linear infinite;
+}
+@keyframes trapDash{
+  to{transform:rotate(360deg)}
+}
+
+/* Clean sprite images never get stretched into clipping. */
+.menuRabbit,.levelRabbit,#overRabbit{
+  object-fit:contain!important;
+  object-position:center!important;
+  overflow:visible!important;
+  image-rendering:pixelated!important;
+}
+.rabbit{
+  max-width:none!important;
+  max-height:none!important;
+  object-fit:contain!important;
+  overflow:visible!important;
+}
+
+/* Level 50+ visual danger */
+body.chaos50 #game{
+  box-shadow:inset 0 0 0 5px rgba(145,61,75,.22);
+}
+body.chaos50 #hint{color:#ffd5c4!important}
+body.chaos50 #tapButton{filter:drop-shadow(0 0 7px rgba(255,125,150,.28));}
+</style>
+
+
+<style>
+#levelRabbit{max-width:210px!important;max-height:155px!important;object-fit:contain!important}
+#overRabbit{max-width:190px!important;max-height:125px!important;object-fit:contain!important}
+</style>
+
 </head>
 <body>
 <div id="game">
   <div id="dangerPulse"></div>
-  <img id="plant" class="decor" src="assets/happy.png?v=9" alt="">
+  <img id="plant" class="decor" src="assets/happy_clean.png?v=10" alt="">
   <img id="bow" class="decor" src="assets/bow.png?v=9" alt="">
   <img id="badge" class="decor" src="assets/badge.png?v=9" alt="">
 
@@ -244,7 +334,7 @@ body.playing #dangerPulse{animation:none}
       <div class="levelUp">✦ LEVEL UP! ✦</div>
       <div id="levelName" class="levelNum">LEVEL 2</div>
       <div id="levelText" class="levelText"><b>Lovely!</b><br>Keep going!</div>
-      <img id="levelRabbit" class="levelRabbit" src="assets/happy.png?v=9" alt="">
+      <img id="levelRabbit" class="levelRabbit" src="assets/happy_clean.png?v=10" alt="">
       <div style="font-family:'Press Start 2P';font-size:7px;color:#765047">TAP TO CONTINUE</div>
     </div>
   </section>
@@ -255,7 +345,7 @@ body.playing #dangerPulse{animation:none}
       <img class="alertIcon" src="assets/alert.png?v=9" alt="">
       <h1>GAME OVER</h1>
       <div id="overReason" class="overText">You tapped the trap...</div>
-      <img id="overRabbit" class="overRabbit" src="assets/idle_sleep.png?v=9" alt="">
+      <img id="overRabbit" class="overRabbit" src="assets/sleep_clean.png?v=10" alt="">
       <div class="scoreBox">SCORE · <span id="finalScore">0</span><br>BEST · <span id="bestScore">0</span></div>
       <button class="btn" id="playAgainButton">TRY AGAIN</button>
       <button class="btn secondary" id="menuButton">BACK TO MENU</button>
@@ -277,11 +367,15 @@ const levelCopy={
   4:['Great!','You’re doing amazing!'],5:['Awesome!','Stay sharp!'],
   6:['Wonderful!','You’re getting good!'],7:['Brilliant!','Don’t blink!'],
   8:['Impressive!','Don’t get comfy!'],9:['Incredible!','You’re still here!'],
-  10:['Legendary!','You’re on fire!']
+  10:['Legendary!','You’re on fire!'],
+  20:['Insane!','The button is running away!'],
+  30:['Unreal!','Don’t blink!'],
+  40:['Masterful!','Everything is moving!'],
+  50:['CHAOS!','Nothing stays still now!']
 };
 
 let score=0,level=1,combo=0,hearts=3,timeLeft=3,gameRunning=false;
-let tapDartTimer=null; let timerId=null,rabbitLoop=null,rabbits=[],traps=[],musicOn=false;
+let tapDartTimer=null; let chaosTrapTimer=null; let timerId=null,rabbitLoop=null,rabbits=[],traps=[],musicOn=false;
 const $=id=>document.getElementById(id), tap=$('tapButton');
 
 function best(){return Number(localStorage.getItem('dontTapBest')||0)}
@@ -295,52 +389,78 @@ function updateHud(){
   $('combo').textContent='COMBO x'+combo;
   $('combo').style.opacity=combo>=2?'1':'0';
   $('menuBest').textContent=best();
+  updateTapStyle();
+  document.body.classList.toggle('chaos50',level>=50);
 }
 function setPlaying(on){document.body.classList.toggle('playing',on)}
+function updateTapStyle(){
+  const style=((Math.floor((level-1)/5))%5)+1;
+  tap.classList.remove('tap-style-1','tap-style-2','tap-style-3','tap-style-4','tap-style-5');
+  tap.classList.add('tap-style-'+style);
+}
 function moveTap(){
-  const w=innerWidth, h=innerHeight;
+  const w=innerWidth,h=innerHeight;
+  const margin=level<12?Math.min(120,w*.16):Math.min(78,w*.09);
+  const minY=level<8?220:190;
+  const maxY=Math.max(minY+80,h-150);
+  const oldX=parseFloat(tap.style.left)||w/2;
+  const oldY=parseFloat(tap.style.top)||h/2;
+  let x,y,tries=0;
 
-  /* Early levels stay readable. From level 12 onward the button
-     starts behaving like a moving target; level 20 becomes very fast. */
-  const margin = level < 8 ? Math.min(120,w*.16) : Math.min(90,w*.11);
-  const minY = level < 8 ? 220 : 190;
-  const maxY = Math.max(minY+80,h-150);
-
-  let x, y;
-
-  if(level < 12){
+  do{
     x=margin+Math.random()*(w-margin*2);
     y=minY+Math.random()*(maxY-minY);
-    tap.style.transition='left .18s ease-out, top .18s ease-out, transform .12s ease';
-  }else{
-    /* A true "darting" target: choose a new point far from the old one. */
-    const oldX=parseFloat(tap.style.left)||w/2;
-    const oldY=parseFloat(tap.style.top)||h/2;
-    let tries=0;
-    do{
-      x=margin+Math.random()*(w-margin*2);
-      y=minY+Math.random()*(maxY-minY);
-      tries++;
-    }while(Math.hypot(x-oldX,y-oldY)<Math.min(260,w*.28) && tries<30);
+    tries++;
+  }while(
+    level>=12 &&
+    Math.hypot(x-oldX,y-oldY)<Math.min(level>=20?300:240,w*.32) &&
+    tries<40
+  );
 
-    const speed = Math.max(.035, .18-(level-12)*.006);
-    tap.style.transition=`left ${speed}s cubic-bezier(.2,1.6,.25,1), top ${speed}s cubic-bezier(.2,1.6,.25,1), transform ${Math.max(.07,speed*.55)}s`;
-  }
+  let speed;
+  if(level<12)speed=.18;
+  else if(level<20)speed=Math.max(.09,.18-(level-12)*.009);
+  else speed=Math.max(.035,.10-(level-20)*.0028);
 
+  tap.style.transition=`left ${speed}s cubic-bezier(.12,1.55,.28,1),top ${speed}s cubic-bezier(.12,1.55,.28,1),transform ${Math.max(.05,speed*.6)}s`;
   tap.style.left=x+'px';
   tap.style.top=y+'px';
 
   if(level>=12){
-    tap.style.transform=`rotate(${(Math.random()*16)-8}deg) scale(${.96+Math.random()*.08})`;
+    const rot=(Math.random()*18)-9;
+    const scale=level>=50 ? .84+Math.random()*.32 : .94+Math.random()*.12;
+    tap.style.transform=`translate(-50%,-50%) rotate(${rot}deg) scale(${scale})`;
     setTimeout(()=>{
-      if(gameRunning) tap.style.transform='rotate(0deg) scale(1)';
-    },Math.max(80,level>=20?150:230));
+      if(gameRunning)tap.style.transform='translate(-50%,-50%) rotate(0deg) scale(1)';
+    },Math.max(70,level>=50?110:180));
   }
+}
+function runTrapChaos(){
+  if(!gameRunning || level<50){
+    chaosTrapTimer=null;
+    return;
+  }
+  const now=performance.now();
+  traps.forEach((t,i)=>{
+    const ax=Number(t.dataset.anchorX), ay=Number(t.dataset.anchorY);
+    const phase=Number(t.dataset.phase)||0;
+    const radius=Number(t.dataset.radius)||0;
+    const wobble=now/420 + phase;
+    const x=ax+Math.cos(wobble)*radius;
+    const y=ay+Math.sin(wobble*1.27)*radius*.65;
+    const scale=.78+(.42*((Math.sin(now/170+phase)+1)/2));
+    const rot=Math.sin(now/250+phase)*18;
+    t.style.left=x+'px';
+    t.style.top=y+'px';
+    t.style.transform=`translate(-50%,-50%) scale(${scale}) rotate(${rot}deg)`;
+  });
+  chaosTrapTimer=requestAnimationFrame(runTrapChaos);
 }
 function clearThings(){
   traps.forEach(x=>x.remove());traps=[];
   rabbits.forEach(x=>{x.el.remove();x.shadow.remove();if(x.alert)x.alert.remove()});rabbits=[];
   clearTimeout(rabbitLoop);
+  if(chaosTrapTimer){cancelAnimationFrame(chaosTrapTimer);chaosTrapTimer=null;}
 }
 function resetAudio(){
   const ids=['music','sndTap','sndTrap','sndLevel','sndOver'];
@@ -419,13 +539,41 @@ function createTrapWave(){
   for(let i=0;i<n;i++)createTrap();
 }
 function createTrap(){
-  const t=document.createElement('button');t.className='trap';t.textContent='×';
-  let x,y,tries=0,bx=parseFloat(tap.style.left)||innerWidth/2,by=parseFloat(tap.style.top)||innerHeight/2;
-  do{x=90+Math.random()*(innerWidth-180);y=240+Math.random()*Math.max(80,innerHeight-330);tries++}
-  while(Math.hypot(x-bx,y-by)<230&&tries<100);
-  t.style.left=x+'px';t.style.top=y+'px';
-  t.onclick=e=>{e.stopPropagation();if(gameRunning)endGame('trap')};
-  $('game').appendChild(t);traps.push(t);
+  const t=document.createElement('button');
+  t.className='trap dynamic-trap';
+  t.textContent='×';
+
+  let x,y,tries=0;
+  const bx=parseFloat(tap.style.left)||innerWidth/2;
+  const by=parseFloat(tap.style.top)||innerHeight/2;
+
+  do{
+    x=90+Math.random()*(innerWidth-180);
+    y=240+Math.random()*Math.max(80,innerHeight-330);
+    tries++;
+  }while(Math.hypot(x-bx,y-by)<230&&tries<100);
+
+  t.style.left=x+'px';
+  t.style.top=y+'px';
+
+  if(level>=20)t.classList.add('pulse20');
+  if(level>=35)t.classList.add('pulse35');
+
+  const size=level>=50 ? .78+Math.random()*.75 : level>=20 ? .9+Math.random()*.35 : 1;
+  t.style.width=(75*size)+'px';
+  t.style.height=(75*size)+'px';
+  t.dataset.anchorX=x;
+  t.dataset.anchorY=y;
+  t.dataset.phase=(Math.random()*Math.PI*2).toFixed(3);
+  t.dataset.radius=(level>=50?(12+Math.random()*35):0).toFixed(1);
+
+  t.onclick=e=>{
+    e.stopPropagation();
+    if(gameRunning)endGame('trap');
+  };
+
+  $('game').appendChild(t);
+  traps.push(t);
 }
 function startRabbitWave(){
   clearTimeout(rabbitLoop);
@@ -483,7 +631,13 @@ function spawnRabbit(i){
     el.style.left=x+'vw';
     el.style.transform=`translateY(${-jump}px) scaleX(${dir})`;
     shadow.style.left=x+'vw';shadow.style.transform=`translateX(-50%) scale(${1-air*.5},${.7+air*.15})`;shadow.style.opacity=.28-.12*air;
-    if(!hitShown && p>.42 && p<.62 && level>=5){alert.style.display='block';alert.style.left=(x+(fromRight?1:6))+'vw';alert.style.top=(y-9)+'vh';hitShown=true}
+    if(!hitShown && p>.28 && p<.72 && level>=3){
+      alert.style.display='block';
+      alert.style.left=(x+(fromRight?1:6))+'vw';
+      alert.style.top=(y-9)+'vh';
+      alert.style.transform=`scale(${level>=20?1.15:1})`;
+      hitShown=true;
+    }
     if(p<1)requestAnimationFrame(anim);else{el.remove();shadow.remove();alert.remove();rabbits=rabbits.filter(q=>q.el!==el)}
   }
   requestAnimationFrame(anim);
