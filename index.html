@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DON'T TAP</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background: #111;
+      color: white;
+      font-family: Arial, sans-serif;
+      height: 100vh;
+      overflow: hidden;
+      user-select: none;
+      -webkit-user-select: none;
+    }
+
+    #game {
+      width: 100%;
+      height: 100vh;
+      position: relative;
+    }
+
+    #top {
+      position: absolute;
+      top: 25px;
+      left: 0;
+      width: 100%;
+      text-align: center;
+      z-index: 5;
+    }
+
+    #score {
+      font-size: 24px;
+      font-weight: bold;
+    }
+
+    #timer {
+      margin-top: 8px;
+      font-size: 16px;
+      color: #aaa;
+    }
+
+    #button {
+      position: absolute;
+      width: 120px;
+      height: 120px;
+      border: none;
+      border-radius: 50%;
+      background: white;
+      color: #111;
+      font-size: 18px;
+      font-weight: bold;
+      cursor: pointer;
+      transform: translate(-50%, -50%);
+      transition: left 0.12s, top 0.12s, transform 0.12s;
+      box-shadow: 0 0 30px rgba(255,255,255,0.15);
+    }
+
+    #button:active {
+      transform: translate(-50%, -50%) scale(0.9);
+    }
+
+    #startScreen,
+    #gameOver {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      background: #111;
+      z-index: 10;
+    }
+
+    #gameOver {
+      display: none;
+    }
+
+    h1 {
+      font-size: 48px;
+      margin-bottom: 12px;
+      letter-spacing: 3px;
+    }
+
+    p {
+      color: #aaa;
+      margin-bottom: 30px;
+    }
+
+    .startButton {
+      border: none;
+      padding: 15px 35px;
+      border-radius: 30px;
+      background: white;
+      color: #111;
+      font-size: 18px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    .startButton:active {
+      transform: scale(0.95);
+    }
+
+    #finalScore {
+      font-size: 26px;
+      margin-bottom: 25px;
+    }
+  </style>
+</head>
+
+<body>
+
+<div id="game">
+
+  <div id="startScreen">
+    <h1>DON'T TAP</h1>
+    <p>Tap before time runs out.</p>
+    <button class="startButton" onclick="startGame()">START</button>
+  </div>
+
+  <div id="gameOver">
+    <h1>GAME OVER</h1>
+    <div id="finalScore"></div>
+    <button class="startButton" onclick="startGame()">PLAY AGAIN</button>
+  </div>
+
+  <div id="top">
+    <div id="score">Score: 0</div>
+    <div id="timer">3.0</div>
+  </div>
+
+  <button id="button" onclick="tapButton()">TAP</button>
+
+</div>
+
+<script>
+
+let score = 0;
+let timeLeft = 3;
+let timer;
+let gameRunning = false;
+
+const button = document.getElementById("button");
+const scoreDisplay = document.getElementById("score");
+const timerDisplay = document.getElementById("timer");
+const startScreen = document.getElementById("startScreen");
+const gameOver = document.getElementById("gameOver");
+const finalScore = document.getElementById("finalScore");
+
+function startGame() {
+
+  score = 0;
+  timeLeft = 3;
+  gameRunning = true;
+
+  scoreDisplay.textContent = "Score: 0";
+  timerDisplay.textContent = "3.0";
+
+  startScreen.style.display = "none";
+  gameOver.style.display = "none";
+
+  moveButton();
+
+  clearInterval(timer);
+
+  timer = setInterval(() => {
+
+    timeLeft -= 0.1;
+
+    if (timeLeft <= 0) {
+      endGame();
+      return;
+    }
+
+    timerDisplay.textContent = timeLeft.toFixed(1);
+
+  }, 100);
+
+}
+
+function tapButton() {
+
+  if (!gameRunning) return;
+
+  score++;
+
+  scoreDisplay.textContent = "Score: " + score;
+
+  timeLeft = Math.max(0.8, 3 - score * 0.04);
+
+  moveButton();
+
+}
+
+function moveButton() {
+
+  const margin = 80;
+
+  const x = margin + Math.random() * (window.innerWidth - margin * 2);
+  const y = 130 + Math.random() * (window.innerHeight - 200);
+
+  button.style.left = x + "px";
+  button.style.top = y + "px";
+
+}
+
+function endGame() {
+
+  gameRunning = false;
+
+  clearInterval(timer);
+
+  finalScore.textContent = "Score: " + score;
+
+  gameOver.style.display = "flex";
+
+}
+
+</script>
+
+</body>
+</html>
