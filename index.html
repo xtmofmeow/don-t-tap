@@ -71,10 +71,10 @@ button{font:inherit;-webkit-tap-highlight-color:transparent}
 
 /* Rabbits */
 .rabbit{
-  position:absolute;z-index:16;width:170px;height:130px;object-fit:contain;
+  position:absolute;z-index:16;width:auto;height:118px;max-width:180px;object-fit:contain;
   image-rendering:pixelated;cursor:pointer;pointer-events:auto;
   filter:drop-shadow(5px 7px 0 rgba(25,15,15,.35));
-  user-select:none;
+  user-select:none;overflow:visible;
 }
 .rabbit.hit{animation:rabbitHit .16s steps(2) 2}
 @keyframes rabbitHit{50%{filter:drop-shadow(5px 7px 0 rgba(25,15,15,.35)) brightness(1.7)}}
@@ -194,8 +194,10 @@ h1{font-family:"Press Start 2P";font-size:30px;line-height:1.45;margin:0 0 14px;
 /* Grounded bunny: shadow stays on the floor while sprite jumps. */
 .rabbit{
   z-index:12!important;
+  width:auto!important;height:118px!important;max-width:180px!important;
   filter:drop-shadow(6px 9px 0 rgba(30,18,17,.34))!important;
   transform-origin:50% 100%!important;
+  overflow:visible!important;
 }
 .rabbitGroundShadow{
   position:absolute;z-index:11;width:110px;height:18px;border-radius:50%;
@@ -223,7 +225,7 @@ h1{font-family:"Press Start 2P";font-size:30px;line-height:1.45;margin:0 0 14px;
 #hint{top:118px!important;color:#f1ddbd!important}
 @media(max-width:700px){
   #tapButton{width:124px!important;height:124px!important;font-size:14px!important}
-  .rabbit{width:132px!important;height:102px!important}
+  .rabbit{width:auto!important;height:92px!important;max-width:140px!important}
 }
 </style>
 
@@ -241,7 +243,7 @@ h1{font-family:"Press Start 2P";font-size:30px;line-height:1.45;margin:0 0 14px;
 
   <div class="hud">
     <div class="stat"><div class="label">SCORE</div><div class="value" id="score">0</div></div>
-    <div class="stat"><div class="label">HEARTS</div><div id="hearts">♥ ♥ ♡</div></div>
+    <div class="stat"><div class="label">HEARTS</div><div id="hearts" aria-label="3 lives">♥ ♥ ♥</div></div>
     <div class="stat"><div class="label">TIMER</div><div class="value" id="timer">3.0</div></div>
     <div class="stat"><div class="label">LEVEL</div><div class="value" id="level">1</div></div>
   </div>
@@ -293,7 +295,7 @@ const levelCopy={
   5:['Awesome!','Stay sharp!'],6:['Wonderful!','You’re getting good!'],7:['Brilliant!','Don’t blink!'],
   8:['Impressive!','Don’t get comfy!'],9:['Incredible!','You’re still here!'],10:['Legendary!','You’re on fire!']
 };
-let score=0,combo=0,level=1,timeLeft=3,gameRunning=false,timerId=null,rabbitTimer=null;
+let score=0,combo=0,level=1,timeLeft=3,hearts=3,gameRunning=false,timerId=null,rabbitTimer=null;
 let traps=[],rabbits=[],audioCtx=null,musicOn=true,musicTimer=null;
 
 const $=id=>document.getElementById(id);
@@ -304,6 +306,8 @@ function updateHud(){
   $('score').textContent=score;
   $('level').textContent=level;
   $('timer').textContent=Math.max(0,timeLeft).toFixed(1);
+  $('hearts').textContent='♥ '.repeat(hearts)+'♡ '.repeat(3-hearts);
+  $('hearts').setAttribute('aria-label',hearts+' lives remaining');
   $('combo').textContent='COMBO x'+combo;
   $('combo').style.opacity=combo>=2?1:0;
   $('menuBest').textContent=best();
@@ -327,7 +331,7 @@ function clearThings(){
 function startGame(){
   initAudio();
   if(audioCtx && audioCtx.state==='suspended') audioCtx.resume();
-  score=0;combo=0;level=1;timeLeft=3;gameRunning=true;
+  score=0;combo=0;level=1;timeLeft=3;hearts=3;gameRunning=true;
   clearThings();
   $('startScreen').classList.add('hidden');$('howScreen').classList.add('hidden');
   $('gameOverScreen').classList.add('hidden');$('levelModal').classList.add('hidden');
@@ -339,8 +343,23 @@ function startGame(){
 function tick(){
   if(!gameRunning)return;
   timeLeft-=.1;
+  if(timeLeft<=0){
+    loseHeart();
+  }
   updateHud();
-  if(timeLeft<=0)endGame('timeout');
+}
+
+function loseHeart(){
+  hearts=Math.max(0,hearts-1);
+  combo=0;
+  playHeartLost();
+  if(hearts<=0){
+    endGame('timeout');
+    return;
+  }
+  timeLeft=timeForLevel(level)+.35;
+  moveTap();
+  updateHud();
 }
 
 function timeForLevel(l){
@@ -455,8 +474,8 @@ function spawnRabbit(i){
   const floorTop=66+Math.random()*20;
   const fromRight=(level>=4 && (i+level)%2===0);
 
-  const startX=fromRight ? 110 : -18;
-  const endX=fromRight ? -20 : 118;
+  const startX=fromRight ? 98 : 2;
+  const endX=fromRight ? 2 : 98;
 
   el.style.top=floorTop+'vh';
   el.style.left=startX+'vw';
@@ -597,18 +616,34 @@ function playTap(){tone(660,.08,'triangle',.045);tone(880,.07,'sine',.025,.04)}
 function playTrap(){tone(120,.28,'sawtooth',.06);tone(75,.35,'square',.04,.04)}
 function playRabbitHit(){tone(180,.15,'square',.05);tone(110,.22,'sawtooth',.04,.05)}
 function playLevel(){tone(523,.12,'triangle',.04);tone(659,.12,'triangle',.04,.12);tone(784,.2,'triangle',.05,.24)}
+function playHeartLost(){tone(330,.08,'triangle',.035);tone(220,.16,'sine',.025,.07)}
 function playGameOver(){tone(220,.2,'sawtooth',.05);tone(165,.3,'sawtooth',.04,.12)}
 function startMusic(){
-  if(!audioCtx||musicTimer)return;
+  if(!audioCtx || !musicOn) return;
+  if(musicTimer) return;
   const notes=[261.63,329.63,392,329.63,293.66,349.23,440,349.23];
   let i=0;
-  musicTimer=setInterval(()=>{if(musicOn)tone(notes[i++%notes.length],.35,'sine',.008)},480);
+  musicTimer=setInterval(()=>{
+    if(musicOn && audioCtx && audioCtx.state==='running'){
+      tone(notes[i++%notes.length],.32,'sine',.010);
+      if(level>=5) tone(notes[(i+2)%notes.length]/2,.22,'triangle',.004,.03);
+    }
+  },480);
+}
+function stopMusic(){
+  if(musicTimer){clearInterval(musicTimer);musicTimer=null;}
 }
 $('soundToggle').onclick=()=>{
+  if(!audioCtx) initAudio();
   musicOn=!musicOn;
   $('soundToggle').textContent=musicOn?'♫ ON':'♫ OFF';
-  if(musicOn){initAudio();startMusic();}
-  else if(audioCtx){ audioCtx.suspend(); }
+  if(musicOn){
+    if(audioCtx && audioCtx.state==='suspended') audioCtx.resume().catch(()=>{});
+    startMusic();
+  }else{
+    stopMusic();
+    if(audioCtx) audioCtx.suspend().catch(()=>{});
+  }
 };
 tap.onclick=e=>{e.stopPropagation();correctTap()};
 $('startButton').onclick=startGame;
