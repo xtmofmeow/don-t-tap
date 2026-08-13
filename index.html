@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>DON'T TAP</title>
+<title>DON'T TAP · Cozy Pixel Room</title>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Pixelify+Sans:wght@500;600;700&family=Press+Start+2P&display=swap');
 
@@ -18,7 +18,7 @@ button{font:inherit;-webkit-tap-highlight-color:transparent}
 
 #game{
   position:relative;width:100vw;height:100vh;overflow:hidden;
-  background:#4c3935 url("assets/cozy_room_background.png") center/cover no-repeat;
+  background:#4c3935 url("assets/cozy_room_background.png?v=2") center/cover no-repeat;
 }
 #game:after{
   content:"";position:absolute;inset:0;pointer-events:none;z-index:1;
@@ -131,9 +131,112 @@ h1{font-family:"Press Start 2P";font-size:30px;line-height:1.45;margin:0 0 14px;
   .card{padding:23px 18px 25px}.card h1{font-size:22px}.sub{font-size:16px}
 }
 </style>
+
+<style id="full-cozy-update">
+/* FULL COZY PIXEL ROOM UPDATE */
+#game{
+  background:#3b2929 url("assets/cozy_room_background.png?v=4") center/cover no-repeat !important;
+}
+#game:before{
+  content:"";
+  position:absolute;inset:0;z-index:0;pointer-events:none;
+  background:
+    linear-gradient(180deg,rgba(35,22,24,.10) 0 55%,rgba(45,27,25,.08) 55% 57%,rgba(91,58,43,.34) 57% 100%),
+    linear-gradient(90deg,rgba(255,210,172,.05),transparent 35%,rgba(255,202,175,.04));
+  image-rendering:pixelated;
+}
+/* Make the floor feel like the lower wooden half in the reference. */
+#game .floorGlow{
+  position:absolute;z-index:2;left:0;right:0;bottom:0;height:43%;
+  pointer-events:none;
+  background:
+    repeating-linear-gradient(0deg,rgba(45,28,24,.10) 0 3px,transparent 3px 34px),
+    repeating-linear-gradient(90deg,rgba(45,28,24,.06) 0 2px,transparent 2px 48px),
+    linear-gradient(180deg,rgba(130,82,57,.12),rgba(91,57,43,.30));
+  border-top:7px solid rgba(64,39,31,.65);
+}
+/* warm window light */
+#game .windowGlow{
+  position:absolute;z-index:2;left:2%;top:13%;width:18%;height:29%;
+  pointer-events:none;
+  background:radial-gradient(ellipse at center,rgba(255,198,158,.20),transparent 70%);
+  filter:blur(1px);
+}
+/* Reference-like hanging plant/props using the supplied pixel assets. */
+.pixelDecor{
+  position:absolute;z-index:5;pointer-events:none;image-rendering:pixelated;
+  filter:drop-shadow(3px 4px 0 rgba(35,20,18,.28));
+}
+#plantDecor{left:2.4%;bottom:7%;width:76px;height:76px;object-fit:contain}
+#bowDecor{right:5%;top:18%;width:58px;height:58px;object-fit:contain}
+#badgeDecor{right:2.8%;top:9%;width:48px;height:48px;object-fit:contain;opacity:.8}
+
+/* Reference-style controls */
+#tapButton{
+  width:154px!important;height:154px!important;
+  border:5px solid #7a3e4a!important;
+  background:
+    radial-gradient(circle at 35% 25%,#ffd1d2 0 5%,transparent 6%),
+    radial-gradient(circle at 50% 50%,#dc7f8e 0 67%,#c96a7b 68% 100%)!important;
+  box-shadow:0 8px 0 #4b2730,inset 0 0 0 6px #efabb4!important;
+  font-size:18px!important;
+}
+#tapButton:after{
+  content:"";
+  position:absolute;inset:12px;border:2px dashed rgba(255,232,220,.8);
+  border-radius:50%;pointer-events:none;
+}
+.trap{
+  width:80px!important;height:80px!important;
+  background:#613443!important;border-color:#3e2028!important;
+  box-shadow:0 6px 0 #27171a,inset 0 0 0 4px #8d5260!important;
+}
+/* Grounded bunny: shadow stays on the floor while sprite jumps. */
+.rabbit{
+  z-index:12!important;
+  filter:drop-shadow(6px 9px 0 rgba(30,18,17,.34))!important;
+  transform-origin:50% 100%!important;
+}
+.rabbitGroundShadow{
+  position:absolute;z-index:11;width:110px;height:18px;border-radius:50%;
+  background:rgba(35,20,18,.25);filter:blur(2px);pointer-events:none;
+}
+/* parchment HUD */
+.hud{
+  z-index:30!important;
+  background:linear-gradient(#f9e7c9,#f2d7b2)!important;
+  border:5px solid #70483e!important;
+  box-shadow:7px 7px 0 #27191b,inset 0 0 0 3px #d0a474!important;
+}
+.stat{border-right:2px solid #d2ad87!important}
+.label{color:#70483f!important}
+.value{color:#342326!important}
+/* Level card: ribbon/leaf feel */
+#levelModal .card{
+  background:linear-gradient(#f9e6c8,#f2d7b1)!important;
+  border-color:#74473f!important;
+}
+#levelModal .card:before{content:"✦  ♡  🎀  ♡  ✦"!important}
+#levelText b{color:#8d4c5b}
+#modalRabbit{image-rendering:pixelated!important}
+/* cozy footer-like hint */
+#hint{top:118px!important;color:#f1ddbd!important}
+@media(max-width:700px){
+  #tapButton{width:124px!important;height:124px!important;font-size:14px!important}
+  .rabbit{width:132px!important;height:102px!important}
+}
+</style>
+
 </head>
 <body>
 <div id="game">
+
+  <div class="floorGlow"></div>
+  <div class="windowGlow"></div>
+  <img id="plantDecor" class="pixelDecor" src="assets/happy.png?v=4" alt="">
+  <img id="bowDecor" class="pixelDecor" src="assets/bow.png?v=4" alt="">
+  <img id="badgeDecor" class="pixelDecor" src="assets/badge.png?v=4" alt="">
+
   <div class="vine one"></div><div class="vine two"></div>
 
   <div class="hud">
@@ -167,7 +270,7 @@ h1{font-family:"Press Start 2P";font-size:30px;line-height:1.45;margin:0 0 14px;
     <div id="levelTitle">✦ LEVEL UP ✦</div>
     <div id="levelName">LEVEL 2</div>
     <div id="levelText">Lovely!<br>Keep going!</div>
-    <img id="modalRabbit" src="assets/rabbit_run_3.png" alt="">
+    <img id="modalRabbit" src="assets/run_3.png?v=2" alt="">
     <div class="sub" style="margin:8px 0 0;font-size:14px">TAP TO CONTINUE</div>
   </div></div>
 
@@ -184,7 +287,7 @@ h1{font-family:"Press Start 2P";font-size:30px;line-height:1.45;margin:0 0 14px;
 
 <script>
 const A='assets/';
-const runFrames=['rabbit_run_1.png','rabbit_run_2.png','rabbit_run_3.png','rabbit_run_4.png','rabbit_run_5.png'];
+const runFrames=['run_1.png','run_2.png','run_3.png','run_4.png','run_5.png'];
 const levelCopy={
   2:['Lovely!','Keep going!'],3:['Nice!','You found your rhythm!'],4:['Great!','You’re doing amazing!'],
   5:['Awesome!','Stay sharp!'],6:['Wonderful!','You’re getting good!'],7:['Brilliant!','Don’t blink!'],
@@ -206,10 +309,15 @@ function updateHud(){
   $('menuBest').textContent=best();
 }
 function moveTap(){
-  const margin=Math.min(120,innerWidth*.18);
+  const margin = level<=2 ? Math.min(150,innerWidth*.22) : Math.min(105,innerWidth*.15);
+  const minY = level<=2 ? 245 : 205;
+  const maxY = Math.max(minY+90,innerHeight-150);
   const x=margin+Math.random()*(innerWidth-margin*2);
-  const y=190+Math.random()*Math.max(100,innerHeight-330);
-  tap.style.left=x+'px';tap.style.top=y+'px';
+  const y=minY+Math.random()*(maxY-minY);
+
+  /* Don't place TAP where a fresh rabbit usually runs. */
+  tap.style.left=x+'px';
+  tap.style.top=y+'px';
 }
 function clearThings(){
   traps.forEach(t=>t.remove());traps=[];
@@ -218,113 +326,264 @@ function clearThings(){
 }
 function startGame(){
   initAudio();
+  if(audioCtx && audioCtx.state==='suspended') audioCtx.resume();
   score=0;combo=0;level=1;timeLeft=3;gameRunning=true;
   clearThings();
   $('startScreen').classList.add('hidden');$('howScreen').classList.add('hidden');
   $('gameOverScreen').classList.add('hidden');$('levelModal').classList.add('hidden');
+  $('hint').textContent="TAP THE PINK BUTTON · DON'T TAP THE RABBITS OR X";
   tap.style.display='block';moveTap();updateHud();
   clearInterval(timerId);timerId=setInterval(tick,100);
 }
+
 function tick(){
   if(!gameRunning)return;
-  timeLeft-=.1;updateHud();
+  timeLeft-=.1;
+  updateHud();
   if(timeLeft<=0)endGame('timeout');
 }
+
+function timeForLevel(l){
+  if(l<=2)return 3.0;
+  if(l===3)return 2.8;
+  if(l===4)return 2.55;
+  if(l===5)return 2.3;
+  return Math.max(1.45,2.3-(l-5)*.14);
+}
+
 function correctTap(){
   if(!gameRunning)return;
   score++;combo++;
-  const old=level;level=Math.floor(score/10)+1;
-  const maxTime=Math.max(1.55,3.0-(level-1)*.16);
-  timeLeft=maxTime+(combo>=3?.35:0);
+  const old=level;
+  level=Math.floor(score/10)+1;
+
+  const bonus=combo>=3 ? .35 : 0;
+  timeLeft=timeForLevel(level)+bonus;
+
   playTap();
-  moveTap();createTrapWave();
-  if(level!==old)showLevel(level);
+
+  /* Level 1: stable button. Level 2: slower movement.
+     From Level 6 onward the button moves more aggressively. */
+  moveTap();
+
+  if(level!==old){
+    clearThings();
+    showLevel(level);
+  }else{
+    createTrapWave();
+  }
+
   updateHud();
 }
+
 function createTrapWave(){
-  if(score<10)return;
+  /* No traps before Level 3. */
+  if(level<3)return;
+
   let amount=0;
-  if(score<20)amount=Math.random()<.4?1:0;
-  else if(score<40)amount=1;
-  else amount=Math.random()<.65?2:1;
+  if(level===3) amount=(Math.random()<.35?1:0);
+  else if(level<=5) amount=(Math.random()<.60?1:0);
+  else amount=(Math.random()<.65?2:1);
+
   for(let i=0;i<amount;i++)createTrap();
 }
+
 function createTrap(){
-  const t=document.createElement('button');t.className='trap';t.textContent='×';
+  const t=document.createElement('button');
+  t.className='trap';
+  t.textContent='×';
+
   let x,y,tries=0;
+  const bx=parseFloat(tap.style.left)||innerWidth/2;
+  const by=parseFloat(tap.style.top)||innerHeight/2;
+
   do{
-    x=85+Math.random()*(innerWidth-170);y=190+Math.random()*Math.max(100,innerHeight-300);tries++;
-  }while(Math.hypot(x-parseFloat(tap.style.left),y-parseFloat(tap.style.top))<180&&tries<70);
-  t.style.left=x+'px';t.style.top=y+'px';
-  t.onclick=e=>{e.stopPropagation();if(gameRunning){playTrap();endGame('trap')}};
-  $('game').appendChild(t);traps.push(t);
+    x=85+Math.random()*(innerWidth-170);
+    y=230+Math.random()*Math.max(80,innerHeight-310);
+    tries++;
+  }while(
+    (Math.hypot(x-bx,y-by)<230 ||
+     Math.hypot(x-innerWidth*.5,y-140)<170) && tries<100
+  );
+
+  t.style.left=x+'px';
+  t.style.top=y+'px';
+
+  t.onclick=e=>{
+    e.stopPropagation();
+    if(gameRunning){playTrap();endGame('trap')}
+  };
+
+  $('game').appendChild(t);
+  traps.push(t);
 }
 
 function startRabbitWave(){
   clearTimeout(rabbitTimer);
-  const count=Math.min(4,Math.floor((level+1)/2));
-  for(let i=0;i<count;i++)setTimeout(()=>{if(gameRunning)spawnRabbit(i)},i*600);
-  rabbitTimer=setTimeout(()=>{if(gameRunning)startRabbitWave()},Math.max(2400,5200-level*300));
+  if(!gameRunning || level<2)return;
+
+  /* Level 2 gets exactly one rabbit after a 1.5s safe grace period.
+     Later levels get more rabbits and shorter gaps. */
+  const count =
+    level===2 ? 1 :
+    level===3 ? (Math.random()<.5?1:2) :
+    level<=5 ? 2 :
+    Math.min(4,2+Math.floor((level-5)/2));
+
+  const grace=level===2 ? 1500 : 650;
+
+  for(let i=0;i<count;i++){
+    setTimeout(()=>{
+      if(gameRunning)spawnRabbit(i);
+    },grace+i*550);
+  }
+
+  const gap=Math.max(1900,4700-level*220);
+  rabbitTimer=setTimeout(()=>{
+    if(gameRunning)startRabbitWave();
+  },gap);
 }
+
 function spawnRabbit(i){
   const el=document.createElement('img');
-  el.className='rabbit';el.src=A+runFrames[(score+i)%runFrames.length];
-  el.alt='rabbit trap';el.draggable=false;
-  const y=48+Math.random()*34;
-  const startX=110;el.style.top=y+'vh';el.style.left=startX+'vw';
+  el.className='rabbit';
+  el.src=A+runFrames[(score+i)%runFrames.length];
+  el.alt='rabbit';
+  el.draggable=false;
+
+  /* Rabbits stay on the floor instead of appearing in the middle of the wall. */
+  const floorTop=66+Math.random()*20;
+  const fromRight=(level>=4 && (i+level)%2===0);
+
+  const startX=fromRight ? 110 : -18;
+  const endX=fromRight ? -20 : 118;
+
+  el.style.top=floorTop+'vh';
+  el.style.left=startX+'vw';
   $('game').appendChild(el);
-  const duration=Math.max(2300,5000-level*280);
+
+  /* A separate floor shadow sells the jump. */
+  const shadow=document.createElement('div');
+  shadow.className='rabbitGroundShadow';
+  shadow.style.left=(startX)+'vw';
+  shadow.style.top=(floorTop+10)+'vh';
+  $('game').appendChild(shadow);
+
+  const duration=Math.max(2500,5000-level*210);
   const start=performance.now();
-  const phase=(i%3)*.8;
-  const r={el};rabbits.push(r);
+  const phase=(i%3)*.18;
+  const r={el,shadow};
+  rabbits.push(r);
 
   el.onclick=e=>{
     e.stopPropagation();
     if(!gameRunning)return;
-    el.classList.add('hit');playRabbitHit();endGame('rabbit');
+    playRabbitHit();
+    endGame('rabbit');
   };
 
   function anim(now){
-    if(!gameRunning){el.remove();return}
+    if(!gameRunning){
+      el.remove();shadow.remove();
+      return;
+    }
+
     const p=Math.min(1,(now-start)/duration);
-    const x=startX-(startX+125)*p;
-    const jump=Math.max(0,Math.sin(p*Math.PI*6+phase))*34;
-    const tilt=Math.sin(p*Math.PI*6+phase)*5;
-    el.style.left=x+'vw';
-    el.style.transform=`translateY(${-jump}px) rotate(${tilt}deg)`;
-    const frame=Math.min(4,Math.floor(p*5));
+
+    /* Direction:
+       fromRight = rabbit runs LEFT and is flipped horizontally.
+       otherwise it runs RIGHT and keeps the source orientation. */
+    const x=startX+(endX-startX)*p;
+
+    /* Three jump arcs during one crossing. */
+    const jumpWave=(Math.sin((p*3*Math.PI*2)+phase)+1)/2;
+    const jumpHeight=(level<4?28:34)+Math.min(22,level*2);
+    const jump=jumpWave*jumpHeight;
+
+    const air=Math.min(1,jump/jumpHeight);
+    const squash=air<.10 ? 1.03 : (air>.86 ? .94 : 1);
+    const stretch=air<.10 ? .97 : (air>.86 ? 1.07 : 1);
+
+    const frame=Math.min(4,Math.floor((p*5+i)%5));
     el.src=A+runFrames[frame];
+
+    const dir=fromRight ? -1 : 1;
+    el.style.left=x+'vw';
+    el.style.transform=
+      `translateY(${-jump}px) scaleX(${dir}) scale(${stretch},${squash})`;
+
+    /* Shadow compresses and fades when the rabbit is high. */
+    shadow.style.left=x+'vw';
+    shadow.style.transform=`translateX(-50%) scale(${1-air*.45},${.65+air*.2})`;
+    shadow.style.opacity=String(.22+.35*(1-air));
+
     if(p<1)requestAnimationFrame(anim);
-    else{el.remove();rabbits=rabbits.filter(q=>q.el!==el)}
+    else{
+      el.remove();shadow.remove();
+      rabbits=rabbits.filter(q=>q.el!==el);
+    }
   }
+
   requestAnimationFrame(anim);
 }
+
 function showLevel(l){
   const c=levelCopy[l]||['Level '+l+'!','Keep going!'];
   $('levelName').textContent='LEVEL '+l;
   $('levelText').innerHTML='<b>'+c[0]+'</b><br>'+c[1];
   $('modalRabbit').src=A+runFrames[(l+1)%runFrames.length];
+
   $('levelModal').classList.remove('hidden');
-  const flash=$('levelFlash');flash.classList.remove('flash');void flash.offsetWidth;flash.classList.add('flash');
+
+  const flash=$('levelFlash');
+  flash.classList.remove('flash');
+  void flash.offsetWidth;
+  flash.classList.add('flash');
+
   playLevel();
-  setTimeout(()=>{$('levelModal').classList.add('hidden')},950);
-  if(l>=2)startRabbitWave();
+
+  /* Close after a short readable moment. */
+  setTimeout(()=>{
+    $('levelModal').classList.add('hidden');
+  },1000);
+
+  /* Level 2 starts after 1.5s of safe play.
+     Later levels start after a shorter grace period. */
+  if(l>=2){
+    clearThings();
+    const delay=(l===2)?1500:700;
+    setTimeout(()=>{
+      if(gameRunning)startRabbitWave();
+    },delay);
+  }
 }
+
 function endGame(reason){
   if(!gameRunning)return;
-  gameRunning=false;clearInterval(timerId);clearThings();tap.style.display='none';
+  gameRunning=false;
+  clearInterval(timerId);
+  clearThings();
+  tap.style.display='none';
+
   if(reason==='rabbit')$('hint').textContent='THE RABBIT GOT YOU · TRY AGAIN';
   else if(reason==='trap')$('hint').textContent='YOU TAPPED THE TRAP · TRY AGAIN';
   else $('hint').textContent='TOO SLOW · TRY AGAIN';
+
   playGameOver();
+
   if(score>best())localStorage.setItem('dontTapBest',score);
-  $('finalScore').textContent=score;$('bestScore').textContent=best();
-  $('gameOverScreen').classList.remove('hidden');updateHud();
+
+  $('finalScore').textContent=score;
+  $('bestScore').textContent=best();
+  $('gameOverScreen').classList.remove('hidden');
+  updateHud();
 }
 function initAudio(){
-  if(audioCtx)return;
-  audioCtx=new (window.AudioContext||window.webkitAudioContext)();
-  if(musicOn)startMusic();
+  if(!audioCtx){
+    audioCtx=new (window.AudioContext||window.webkitAudioContext)();
+  }
+  if(audioCtx.state==='suspended') audioCtx.resume();
+  if(musicOn) startMusic();
 }
 function tone(freq,dur,type='sine',gain=.035,delay=0){
   if(!audioCtx)return;
@@ -346,8 +605,10 @@ function startMusic(){
   musicTimer=setInterval(()=>{if(musicOn)tone(notes[i++%notes.length],.35,'sine',.008)},480);
 }
 $('soundToggle').onclick=()=>{
-  musicOn=!musicOn;$('soundToggle').textContent=musicOn?'♫ ON':'♫ OFF';
-  if(musicOn){initAudio();startMusic()}
+  musicOn=!musicOn;
+  $('soundToggle').textContent=musicOn?'♫ ON':'♫ OFF';
+  if(musicOn){initAudio();startMusic();}
+  else if(audioCtx){ audioCtx.suspend(); }
 };
 tap.onclick=e=>{e.stopPropagation();correctTap()};
 $('startButton').onclick=startGame;
@@ -357,5 +618,31 @@ $('backButton').onclick=()=>{$('howScreen').classList.add('hidden')};
 $('menuButton').onclick=()=>{$('gameOverScreen').classList.add('hidden');$('startScreen').classList.remove('hidden');$('hint').textContent="TAP THE PINK BUTTON · DON'T TAP THE RABBITS OR X";updateHud()};
 updateHud();
 </script>
+
+<script>
+window.addEventListener('load',()=>{
+  ['cozy_room_background.png','run_1.png','run_2.png','run_3.png','run_4.png','run_5.png'].forEach(n=>{
+    const img=new Image();
+    img.onerror=()=>console.warn('DON\'T TAP asset missing:', 'assets/'+n);
+    img.src='assets/'+n+'?v=2';
+  });
+});
+</script>
+
+
+<script>
+document.addEventListener('visibilitychange',()=>{
+  if(!document.hidden && audioCtx && musicOn){
+    audioCtx.resume().catch(()=>{});
+    startMusic();
+  }
+});
+['pointerdown','touchstart','keydown'].forEach(ev=>{
+  document.addEventListener(ev,()=>{
+    if(audioCtx && audioCtx.state==='suspended') audioCtx.resume().catch(()=>{});
+  },{passive:true});
+});
+</script>
+
 </body>
 </html>
