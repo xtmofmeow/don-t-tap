@@ -10,7 +10,7 @@
   content="width=device-width, initial-scale=1.0"
 >
 
-<title>DON'T TAP</title>
+<title>DON'T TAP — Cozy Pixel</title>
 
 <style>
 
@@ -645,6 +645,250 @@ h1 {
 
 }
 
+</style>
+
+
+<style>
+/* =========================================================
+   DON'T TAP — PIXEL COZY ART DIRECTION
+   Visual update based on the approved pixel-art mockup.
+   Gameplay/JS is intentionally left intact.
+========================================================= */
+@import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Pixelify+Sans:wght@400;500;600;700&display=swap');
+
+:root{
+  --px-ink:#3b2929;
+  --px-cream:#f8e9d4;
+  --px-paper:#f6dfc7;
+  --px-pink:#c96f82;
+  --px-pink2:#e59aaa;
+  --px-rose:#8f4656;
+  --px-green:#536849;
+  --px-wood:#5a4033;
+  --px-dark:#241a1a;
+}
+
+/* pixel texture without changing the game logic */
+body{
+  font-family:'Pixelify Sans', sans-serif !important;
+  background:
+    linear-gradient(rgba(42,29,27,.12) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(42,29,27,.12) 1px, transparent 1px),
+    linear-gradient(180deg,#3f302d 0%,#6a4c3c 52%,#3b2a27 100%) !important;
+  background-size:4px 4px,4px 4px,100% 100% !important;
+  image-rendering:pixelated;
+}
+
+#game{
+  background:
+    radial-gradient(circle at 50% 25%,rgba(255,229,187,.24),transparent 24%),
+    linear-gradient(180deg,transparent 0 62%,rgba(23,16,15,.35) 100%);
+}
+
+/* cozy window */
+#game::before{
+  content:"";
+  position:absolute;
+  z-index:0;
+  left:3%;
+  top:4%;
+  width:24%;
+  height:28%;
+  min-width:150px;
+  background:
+    linear-gradient(90deg,transparent 47%,#6e5142 48% 52%,transparent 53%),
+    linear-gradient(0deg,transparent 47%,#6e5142 48% 52%,transparent 53%),
+    linear-gradient(135deg,#d7c4b7,#f7e7dc 48%,#b8cad0);
+  border:8px solid #4b342d;
+  box-shadow:8px 8px 0 #2b2020, inset 0 0 0 4px #98745c;
+  opacity:.95;
+}
+
+/* little plant silhouette */
+#game::after{
+  content:"";
+  position:absolute;
+  z-index:0;
+  right:2%;
+  bottom:4%;
+  width:17%;
+  height:34%;
+  background:
+    radial-gradient(ellipse at 35% 12%,#70865c 0 9%,transparent 10%),
+    radial-gradient(ellipse at 60% 25%,#536849 0 10%,transparent 11%),
+    radial-gradient(ellipse at 25% 35%,#70865c 0 8%,transparent 9%),
+    linear-gradient(90deg,transparent 46%,#604536 47% 54%,transparent 55%);
+  filter:drop-shadow(5px 6px 0 #2b2020);
+  opacity:.9;
+}
+
+/* HUD = pixel game panels */
+#score,#timer,#level,#combo,#warning,#musicToggle{
+  font-family:'Press Start 2P',monospace !important;
+  letter-spacing:0 !important;
+  text-transform:uppercase;
+}
+
+#score,#timer,#level,#combo{
+  background:var(--px-paper) !important;
+  color:var(--px-ink) !important;
+  border:4px solid var(--px-rose) !important;
+  border-radius:0 !important;
+  box-shadow:5px 5px 0 #241a1a !important;
+  padding:9px 12px !important;
+}
+
+#score{left:18px !important;top:18px !important}
+#timer{left:50% !important;transform:translateX(-50%) !important;top:18px !important}
+#level{left:50% !important;transform:translateX(-50%) !important;top:62px !important}
+#combo{left:18px !important;top:72px !important}
+
+#warning{
+  color:#fff0d9 !important;
+  text-shadow:3px 3px 0 #6d2639 !important;
+}
+
+/* music/settings buttons */
+#musicToggle{
+  background:var(--px-paper) !important;
+  color:var(--px-rose) !important;
+  border:4px solid var(--px-rose) !important;
+  border-radius:0 !important;
+  box-shadow:4px 4px 0 #241a1a !important;
+  padding:10px 12px !important;
+  font-size:9px !important;
+}
+
+/* central TAP button */
+#tapButton{
+  width:132px !important;
+  height:132px !important;
+  border-radius:50% !important;
+  border:5px solid #713d49 !important;
+  background:
+    radial-gradient(circle at 35% 28%,#f6b6c1 0 7%,transparent 8%),
+    #d8798d !important;
+  color:#fff5e8 !important;
+  font-family:'Press Start 2P',monospace !important;
+  font-size:18px !important;
+  box-shadow:
+    0 0 0 5px #efc1c8,
+    7px 7px 0 #241a1a !important;
+  text-shadow:3px 3px 0 #8d4657 !important;
+}
+#tapButton:active{
+  box-shadow:0 0 0 5px #efc1c8,2px 2px 0 #241a1a !important;
+}
+
+/* trap buttons */
+.trap{
+  border-radius:50% !important;
+  border:4px solid #4b2730 !important;
+  background:#7c4653 !important;
+  color:#ffe9d6 !important;
+  font-family:'Press Start 2P',monospace !important;
+  font-size:10px !important;
+  box-shadow:4px 4px 0 #211819 !important;
+}
+.trap::after{
+  content:"×";
+  position:absolute;
+  inset:0;
+  display:grid;
+  place-items:center;
+  color:#ffe8d0;
+  font-size:22px;
+  opacity:.75;
+}
+
+/* rabbit sprites: pixelated silhouette with no emoji */
+.rabbit{
+  width:92px !important;
+  height:92px !important;
+  image-rendering:pixelated !important;
+  filter:drop-shadow(4px 5px 0 rgba(35,25,25,.55)) !important;
+}
+
+/* start / game over panels */
+.screen{
+  background:
+    linear-gradient(135deg,rgba(255,239,219,.98),rgba(246,218,198,.98)) !important;
+  border:6px solid var(--px-rose) !important;
+  border-radius:0 !important;
+  box-shadow:
+    8px 8px 0 #241a1a,
+    inset 0 0 0 4px #fff0dc !important;
+  padding:34px 30px !important;
+}
+.screen h1{
+  font-family:'Press Start 2P',monospace !important;
+  color:var(--px-rose) !important;
+  text-shadow:4px 4px 0 #e7a5ae !important;
+  letter-spacing:0 !important;
+  line-height:1.5 !important;
+}
+.subtitle{
+  font-family:'Pixelify Sans',sans-serif !important;
+  font-size:22px !important;
+  color:#725454 !important;
+}
+.startButton{
+  border-radius:0 !important;
+  border:5px solid #713d49 !important;
+  background:#d8798d !important;
+  color:#fff2df !important;
+  font-family:'Press Start 2P',monospace !important;
+  font-size:13px !important;
+  box-shadow:6px 6px 0 #241a1a !important;
+  text-transform:uppercase;
+}
+.startButton:hover{
+  background:#e58f9e !important;
+}
+#finalScore,#bestScore{
+  font-family:'Press Start 2P',monospace !important;
+  color:#6f414b !important;
+}
+
+/* level-up card */
+#levelMessage{
+  font-family:'Press Start 2P',monospace !important;
+  color:#7e4050 !important;
+  background:#f7e3ce !important;
+  border:5px solid #bd6b7d !important;
+  border-radius:0 !important;
+  box-shadow:
+    7px 7px 0 #241a1a,
+    inset 0 0 0 4px #fff0df !important;
+  padding:24px !important;
+  text-shadow:2px 2px 0 #efb6bf !important;
+}
+
+/* level flash = pixel stars */
+#levelFlash{
+  background:
+    radial-gradient(circle,#fff4dd 0 3px,transparent 4px),
+    radial-gradient(circle,#f5a6b7 0 3px,transparent 4px),
+    radial-gradient(circle,#fff4dd 0 2px,transparent 3px) !important;
+  background-size:70px 70px,100px 100px,45px 45px !important;
+}
+
+/* mobile */
+@media(max-width:600px){
+  #score,#timer,#level,#combo{font-size:8px !important;padding:7px 8px !important;border-width:3px !important;box-shadow:3px 3px 0 #241a1a !important}
+  #score{left:8px !important}
+  #combo{left:8px !important}
+  #musicToggle{right:8px !important;font-size:7px !important;border-width:3px !important}
+  #tapButton{width:112px !important;height:112px !important;font-size:14px !important}
+  .screen{width:min(92vw,420px) !important;padding:24px 18px !important}
+  .screen h1{font-size:28px !important}
+  .subtitle{font-size:18px !important}
+}
+
+/* tiny pixel hearts / stars */
+#score::before{content:"♥ ";color:#bd6479}
+#level::before{content:"✦ ";color:#bd6479}
+#combo::before{content:"♥ ";color:#bd6479}
 </style>
 
 </head>
