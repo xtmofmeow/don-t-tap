@@ -278,11 +278,29 @@ body.chaos50 #tapButton{filter:drop-shadow(0 0 7px rgba(255,125,150,.28));}
 #overRabbit{max-width:190px!important;max-height:125px!important;object-fit:contain!important}
 </style>
 
+
+<style id="happy-visible-fix">
+#levelRabbit{
+  display:block!important;
+  visibility:visible!important;
+  opacity:1!important;
+  width:150px!important;
+  height:130px!important;
+  max-width:150px!important;
+  max-height:130px!important;
+  object-fit:contain!important;
+  image-rendering:pixelated!important;
+  margin:8px auto 0!important;
+  position:relative!important;
+  z-index:5!important;
+}
+#levelModal .card{overflow:visible!important;}
+</style>
 </head>
 <body>
 <div id="game">
   <div id="dangerPulse"></div>
-  <img id="plant" class="decor" src="assets/happy_clean.png?v=10" alt="">
+  <img id="plant" class="decor" src="assets/happy_v2.png?v=20260813" alt="">
   <img id="bow" class="decor" src="assets/bow.png?v=9" alt="">
   <img id="badge" class="decor" src="assets/badge.png?v=9" alt="">
 
@@ -334,7 +352,7 @@ body.chaos50 #tapButton{filter:drop-shadow(0 0 7px rgba(255,125,150,.28));}
       <div class="levelUp">✦ LEVEL UP! ✦</div>
       <div id="levelName" class="levelNum">LEVEL 2</div>
       <div id="levelText" class="levelText"><b>Lovely!</b><br>Keep going!</div>
-      <img id="levelRabbit" class="levelRabbit" src="assets/happy_clean.png?v=10" alt="">
+      <img id="levelRabbit" class="levelRabbit" src="assets/happy_v2.png?v=20260813" alt="">
       <div style="font-family:'Press Start 2P';font-size:7px;color:#765047">TAP TO CONTINUE</div>
     </div>
   </section>
@@ -646,7 +664,8 @@ function showLevel(l){
   const c=levelCopy[l]||['Level '+l+'!','Keep going!'];
   $('levelName').textContent='LEVEL '+l;
   $('levelText').innerHTML='<b>'+c[0]+'</b><br>'+c[1];
-  $('levelRabbit').src=(l%2)?A+'happy.png?v=9':A+'idle_front.png?v=9';
+  $('levelRabbit').src=A+'happy_v2.png?v=20260813';
+  $('levelRabbit').onerror=()=>{$('levelRabbit').style.display='none';};
   $('levelModal').style.display='flex';
   playSound('sndLevel');
   const flash=document.createElement('div');flash.style.cssText='position:absolute;inset:0;background:radial-gradient(circle,#fff5df,transparent 58%);z-index:59;animation:levelFlash .6s steps(4) forwards;pointer-events:none';$('game').appendChild(flash);
