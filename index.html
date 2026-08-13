@@ -175,9 +175,23 @@ button{font:inherit;cursor:pointer;-webkit-tap-highlight-color:transparent}
   .levelText{font-size:18px}.levelNum{font-size:19px}.levelUp{font-size:13px}
 }
 </style>
+
+<style id="difficulty-polish">
+#dangerPulse{
+  position:absolute;inset:0;z-index:45;pointer-events:none;opacity:0;
+  box-shadow:inset 0 0 0 0 rgba(215,123,137,0);
+}
+body.playing #dangerPulse{animation:none}
+.danger-high{animation:dangerPulse .9s steps(2) infinite!important}
+@keyframes dangerPulse{
+  0%,100%{opacity:0;box-shadow:inset 0 0 0 0 rgba(215,123,137,0)}
+  50%{opacity:.45;box-shadow:inset 0 0 0 5px rgba(215,123,137,.12)}
+}
+</style>
 </head>
 <body>
 <div id="game">
+  <div id="dangerPulse"></div>
   <img id="plant" class="decor" src="assets/happy.png?v=9" alt="">
   <img id="bow" class="decor" src="assets/bow.png?v=9" alt="">
   <img id="badge" class="decor" src="assets/badge.png?v=9" alt="">
@@ -275,6 +289,8 @@ function updateHud(){
   $('score').textContent=score;
   $('level').textContent=level;
   $('timer').textContent=Math.max(0,timeLeft).toFixed(1);
+  const danger=$('dangerPulse');
+  if(danger) danger.classList.toggle('danger-high',level>=6);
   $('hearts').innerHTML=['♥','♥','♥'].map((h,i)=>i<hearts?'♥':'♡').join(' ');
   $('combo').textContent='COMBO x'+combo;
   $('combo').style.opacity=combo>=2?'1':'0';
@@ -282,8 +298,15 @@ function updateHud(){
 }
 function setPlaying(on){document.body.classList.toggle('playing',on)}
 function moveTap(){
-  const m=level<=2?Math.min(150,innerWidth*.20):Math.min(110,innerWidth*.14);
-  const yMin=level<=2?250:210,yMax=Math.max(yMin+80,innerHeight-145);
+  const m = level<=2
+    ? Math.min(150,innerWidth*.20)
+    : level<=4
+      ? Math.min(115,innerWidth*.15)
+      : Math.min(90,innerWidth*.11);
+
+  const yMin = level<=2 ? 250 : 205;
+  const yMax = Math.max(yMin+80,innerHeight-145);
+
   tap.style.left=(m+Math.random()*(innerWidth-m*2))+'px';
   tap.style.top=(yMin+Math.random()*(yMax-yMin))+'px';
 }
@@ -331,17 +354,19 @@ function tick(){
   updateHud();
 }
 function timeForLevel(l){
-  if(l<=2)return 3;
-  if(l===3)return 2.8;
-  if(l===4)return 2.55;
-  if(l===5)return 2.3;
-  return Math.max(1.5,2.3-(l-5)*.13);
+  /* A little harder, but never brutally fast. */
+  if(l<=2)return 3.0;
+  if(l===3)return 2.65;
+  if(l===4)return 2.4;
+  if(l===5)return 2.15;
+  if(l===6)return 2.0;
+  return Math.max(1.25,2.0-(l-6)*.11);
 }
 function correctTap(){
   if(!gameRunning)return;
   score++;combo++;
   const old=level;level=Math.floor(score/10)+1;
-  timeLeft=timeForLevel(level)+(combo>=3?.35:0);
+  timeLeft=timeForLevel(level)+(combo>=3?.25:0)+(combo>=7?.15:0);
   playSound('sndTap');
   moveTap();
   if(level!==old){clearThings();showLevel(level)}
@@ -350,7 +375,16 @@ function correctTap(){
 }
 function createTrapWave(){
   if(level<3)return;
-  let n=level===3?(Math.random()<.35?1:0):level<=5?(Math.random()<.6?1:0):(Math.random()<.7?2:1);
+
+  /* Level 3 introduces one trap gently.
+     From Level 4 onward the board gets progressively busier. */
+  let n=0;
+  if(level===3) n=(Math.random()<.50?1:0);
+  else if(level===4) n=(Math.random()<.75?1:0);
+  else if(level===5) n=(Math.random()<.55?2:1);
+  else if(level<=7) n=(Math.random()<.65?2:1);
+  else n=Math.min(4,2+Math.floor((level-7)/3));
+
   for(let i=0;i<n;i++)createTrap();
 }
 function createTrap(){
@@ -365,10 +399,24 @@ function createTrap(){
 function startRabbitWave(){
   clearTimeout(rabbitLoop);
   if(!gameRunning||level<2)return;
-  const count=level===2?1:level===3?(Math.random()<.5?1:2):level<=5?2:Math.min(4,2+Math.floor((level-5)/2));
-  const grace=level===2?1500:550;
-  for(let i=0;i<count;i++)setTimeout(()=>{if(gameRunning)spawnRabbit(i)},grace+i*480);
-  rabbitLoop=setTimeout(()=>{if(gameRunning)startRabbitWave()},Math.max(2100,4700-level*230));
+
+  const count =
+    level===2 ? 1 :
+    level===3 ? (Math.random()<.65?1:2) :
+    level===4 ? 2 :
+    level<=6 ? (Math.random()<.45?3:2) :
+    Math.min(4,3+Math.floor((level-7)/3));
+
+  const grace = level===2 ? 1500 : Math.max(350,650-(level-3)*35);
+
+  for(let i=0;i<count;i++){
+    setTimeout(()=>{if(gameRunning)spawnRabbit(i)},grace+i*380);
+  }
+
+  const gap=Math.max(1550,4300-level*210);
+  rabbitLoop=setTimeout(()=>{
+    if(gameRunning)startRabbitWave();
+  },gap);
 }
 function spawnRabbit(i){
   const el=document.createElement('img');
@@ -389,7 +437,9 @@ function spawnRabbit(i){
   let hitShown=false;
   el.onclick=e=>{e.stopPropagation();if(gameRunning)endGame('rabbit')};
 
-  const startT=performance.now(),duration=Math.max(2800,5200-level*210),phase=i*.5;
+  const startT=performance.now(),
+        duration=Math.max(2100,5200-level*260),
+        phase=i*.5;
   function anim(now){
     if(!gameRunning){el.remove();shadow.remove();alert.remove();return}
     const p=Math.min(1,(now-startT)/duration);
