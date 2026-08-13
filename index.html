@@ -24,6 +24,7 @@ body {
   width: 100vw;
   height: 100vh;
   position: relative;
+  overflow: hidden;
 }
 
 #score {
@@ -33,7 +34,6 @@ body {
   text-align: center;
   font-size: 24px;
   font-weight: bold;
-  color: #4a3440;
   z-index: 10;
 }
 
@@ -42,7 +42,6 @@ body {
   top: 58px;
   width: 100%;
   text-align: center;
-  font-size: 15px;
   color: #9a7b87;
   z-index: 10;
 }
@@ -57,30 +56,39 @@ body {
   z-index: 10;
 }
 
-#tapButton,
-.trap {
+#warning {
   position: absolute;
-  border: none;
-  border-radius: 50%;
-  transform: translate(-50%, -50%);
-  cursor: pointer;
-  font-weight: bold;
+  top: 108px;
+  width: 100%;
+  text-align: center;
+  color: #b85c7a;
+  font-size: 12px;
+  opacity: 0;
+  z-index: 10;
 }
 
 #tapButton {
+  position: absolute;
   width: 120px;
   height: 120px;
+  border: none;
+  border-radius: 50%;
   background: #f3c1d4;
   color: #4a3440;
   font-size: 18px;
-  box-shadow: 0 8px 25px rgba(184,92,122,0.18);
+  font-weight: bold;
+  transform: translate(-50%, -50%);
+  cursor: pointer;
   z-index: 5;
+
+  box-shadow:
+    0 8px 25px rgba(184,92,122,0.18);
+
   transition:
     left 0.15s ease,
     top 0.15s ease,
     width 0.2s ease,
-    height 0.2s ease,
-    transform 0.1s ease;
+    height 0.2s ease;
 }
 
 #tapButton:active {
@@ -88,23 +96,152 @@ body {
 }
 
 .trap {
+  position: absolute;
   width: 90px;
   height: 90px;
+  border: none;
+  border-radius: 50%;
   background: #d88fa8;
   color: white;
   font-size: 15px;
+  font-weight: bold;
+  transform: translate(-50%, -50%);
   z-index: 4;
-  box-shadow: 0 6px 20px rgba(184,92,122,0.15);
+  cursor: pointer;
+}
+
+.rabbit {
+  position: absolute;
+  font-size: 48px;
+  width: 65px;
+  height: 65px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 6;
+  cursor: pointer;
+
+  filter:
+    drop-shadow(0 6px 8px rgba(184,92,122,0.18));
+
+  transition: transform 0.12s ease;
+}
+
+.rabbit.jump {
+  animation: rabbitJump 0.55s ease-out;
+}
+
+@keyframes rabbitJump {
+
+  0% {
+    transform: translateY(0) rotate(0deg);
+  }
+
+  35% {
+    transform: translateY(-75px) rotate(-8deg);
+  }
+
+  65% {
+    transform: translateY(-45px) rotate(8deg);
+  }
+
+  100% {
+    transform: translateY(0) rotate(0deg);
+  }
+
+}
+
+#levelFlash {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(
+      circle at center,
+      rgba(255,255,255,0.95),
+      rgba(243,193,212,0.7),
+      rgba(233,169,194,0)
+    );
+
+  opacity: 0;
+  pointer-events: none;
+  z-index: 15;
+}
+
+.levelFlashAnimation {
+  animation: levelFlash 0.75s ease-out;
+}
+
+@keyframes levelFlash {
+
+  0% {
+    opacity: 0;
+  }
+
+  20% {
+    opacity: 1;
+  }
+
+  45% {
+    opacity: 0.8;
+  }
+
+  100% {
+    opacity: 0;
+  }
+
+}
+
+#levelMessage {
+  position: absolute;
+  top: 42%;
+  width: 100%;
+  text-align: center;
+  font-size: 34px;
+  font-weight: bold;
+  color: #b85c7a;
+  opacity: 0;
+  pointer-events: none;
+  z-index: 16;
+}
+
+.levelMessageAnimation {
+  animation: levelMessage 0.9s ease-out;
+}
+
+@keyframes levelMessage {
+
+  0% {
+    opacity: 0;
+    transform: scale(0.7);
+  }
+
+  30% {
+    opacity: 1;
+    transform: scale(1.1);
+  }
+
+  70% {
+    opacity: 1;
+    transform: scale(1);
+  }
+
+  100% {
+    opacity: 0;
+    transform: scale(1.05);
+  }
+
 }
 
 .screen {
   position: absolute;
   inset: 0;
   background: #fff4f8;
+
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
+
   text-align: center;
   z-index: 20;
 }
@@ -117,7 +254,6 @@ h1 {
   margin: 0 0 12px;
   font-size: 48px;
   letter-spacing: 3px;
-  color: #4a3440;
 }
 
 .subtitle {
@@ -129,12 +265,17 @@ h1 {
   border: none;
   padding: 15px 36px;
   border-radius: 30px;
+
   background: #e9a9c2;
   color: #4a3440;
+
   font-size: 17px;
   font-weight: bold;
+
   cursor: pointer;
-  box-shadow: 0 6px 18px rgba(184,92,122,0.15);
+
+  box-shadow:
+    0 6px 18px rgba(184,92,122,0.15);
 }
 
 .startButton:active {
@@ -144,28 +285,6 @@ h1 {
 #bestScore {
   color: #9a7b87;
   margin-bottom: 28px;
-}
-
-#warning {
-  position: absolute;
-  top: 108px;
-  width: 100%;
-  text-align: center;
-  color: #b85c7a;
-  font-size: 12px;
-  opacity: 0;
-  transition: opacity 0.3s;
-  z-index: 10;
-}
-
-#flash {
-  position: absolute;
-  inset: 0;
-  background: #e9a9c2;
-  opacity: 0;
-  pointer-events: none;
-  z-index: 15;
-  transition: opacity 0.1s;
 }
 
 </style>
@@ -178,11 +297,20 @@ h1 {
   <div id="score">Score: 0</div>
   <div id="timer">3.0</div>
   <div id="level">LEVEL 1</div>
-  <div id="warning">BE CAREFUL...</div>
 
-  <div id="flash"></div>
+  <div id="warning">
+    BE CAREFUL...
+  </div>
 
-  <button id="tapButton">TAP</button>
+  <div id="levelFlash"></div>
+
+  <div id="levelMessage">
+    LEVEL UP!
+  </div>
+
+  <button id="tapButton">
+    TAP
+  </button>
 
   <div id="startScreen" class="screen">
 
@@ -192,13 +320,15 @@ h1 {
       Tap before time runs out.
     </div>
 
-    <button class="startButton" onclick="startGame()">
+    <button class="startButton"
+            onclick="startGame()">
       START
     </button>
 
   </div>
 
-  <div id="gameOverScreen" class="screen hidden">
+  <div id="gameOverScreen"
+       class="screen hidden">
 
     <h1>GAME OVER</h1>
 
@@ -206,7 +336,8 @@ h1 {
 
     <div id="bestScore"></div>
 
-    <button class="startButton" onclick="startGame()">
+    <button class="startButton"
+            onclick="startGame()">
       PLAY AGAIN
     </button>
 
@@ -218,138 +349,427 @@ h1 {
 
 let score = 0;
 let timeLeft = 3;
+
 let timerInterval;
+let rabbitInterval;
+
 let gameRunning = false;
+
 let traps = [];
+let rabbits = [];
 
-const button = document.getElementById("tapButton");
-const scoreText = document.getElementById("score");
-const timerText = document.getElementById("timer");
-const levelText = document.getElementById("level");
-const warning = document.getElementById("warning");
-const flash = document.getElementById("flash");
+let currentLevel = 1;
 
-const startScreen = document.getElementById("startScreen");
-const gameOverScreen = document.getElementById("gameOverScreen");
+let audioContext;
 
-const finalScore = document.getElementById("finalScore");
-const bestScore = document.getElementById("bestScore");
+
+/* -------------------------
+   AUDIO
+------------------------- */
+
+function initAudio() {
+
+  if (!audioContext) {
+    audioContext =
+      new (window.AudioContext ||
+      window.webkitAudioContext)();
+  }
+
+  if (audioContext.state === "suspended") {
+    audioContext.resume();
+  }
+}
+
+
+function playTone(
+  frequency,
+  duration,
+  type = "sine",
+  volume = 0.06
+) {
+
+  initAudio();
+
+  const oscillator =
+    audioContext.createOscillator();
+
+  const gain =
+    audioContext.createGain();
+
+  oscillator.type = type;
+
+  oscillator.frequency.value =
+    frequency;
+
+  gain.gain.setValueAtTime(
+    volume,
+    audioContext.currentTime
+  );
+
+  gain.gain.exponentialRampToValueAtTime(
+    0.001,
+    audioContext.currentTime + duration
+  );
+
+  oscillator.connect(gain);
+  gain.connect(audioContext.destination);
+
+  oscillator.start();
+
+  oscillator.stop(
+    audioContext.currentTime + duration
+  );
+}
+
+
+function tapSound() {
+
+  playTone(
+    620,
+    0.07,
+    "sine",
+    0.055
+  );
+
+}
+
+
+function rabbitSound() {
+
+  playTone(
+    180,
+    0.08,
+    "triangle",
+    0.04
+  );
+
+  setTimeout(() => {
+
+    playTone(
+      300,
+      0.1,
+      "triangle",
+      0.035
+    );
+
+  }, 50);
+
+}
+
+
+function levelUpSound() {
+
+  playTone(
+    523,
+    0.12,
+    "sine",
+    0.06
+  );
+
+  setTimeout(() => {
+
+    playTone(
+      659,
+      0.12,
+      "sine",
+      0.06
+    );
+
+  }, 100);
+
+  setTimeout(() => {
+
+    playTone(
+      784,
+      0.2,
+      "sine",
+      0.065
+    );
+
+  }, 200);
+
+}
+
+
+/* -------------------------
+   ELEMENTS
+------------------------- */
+
+const button =
+  document.getElementById("tapButton");
+
+const scoreText =
+  document.getElementById("score");
+
+const timerText =
+  document.getElementById("timer");
+
+const levelText =
+  document.getElementById("level");
+
+const warning =
+  document.getElementById("warning");
+
+const levelFlash =
+  document.getElementById("levelFlash");
+
+const levelMessage =
+  document.getElementById("levelMessage");
+
+const startScreen =
+  document.getElementById("startScreen");
+
+const gameOverScreen =
+  document.getElementById("gameOverScreen");
+
+const finalScore =
+  document.getElementById("finalScore");
+
+const bestScore =
+  document.getElementById("bestScore");
+
 
 button.style.display = "none";
 
 
+/* -------------------------
+   START
+------------------------- */
+
 function startGame() {
+
+  initAudio();
 
   score = 0;
   timeLeft = 3;
+  currentLevel = 1;
+
   gameRunning = true;
 
   clearInterval(timerInterval);
+  clearInterval(rabbitInterval);
+
   removeTraps();
+  removeRabbits();
 
-  scoreText.textContent = "Score: 0";
-  timerText.textContent = "3.0";
-  levelText.textContent = "LEVEL 1";
+  scoreText.textContent =
+    "Score: 0";
 
-  warning.style.opacity = "0";
+  timerText.textContent =
+    "3.0";
 
-  startScreen.classList.add("hidden");
-  gameOverScreen.classList.add("hidden");
+  levelText.textContent =
+    "LEVEL 1";
 
-  button.style.display = "block";
+  warning.style.opacity =
+    "0";
+
+  startScreen.classList.add(
+    "hidden"
+  );
+
+  gameOverScreen.classList.add(
+    "hidden"
+  );
+
+  button.style.display =
+    "block";
+
+  button.style.width =
+    "120px";
+
+  button.style.height =
+    "120px";
 
   moveButton();
 
-  timerInterval = setInterval(updateTimer, 100);
+  timerInterval =
+    setInterval(
+      updateTimer,
+      100
+    );
+
 }
 
+
+/* -------------------------
+   TIMER
+------------------------- */
 
 function updateTimer() {
 
   timeLeft -= 0.1;
 
-  timerText.textContent = timeLeft.toFixed(1);
+  timerText.textContent =
+    timeLeft.toFixed(1);
 
   if (timeLeft <= 0) {
+
     endGame();
+
   }
+
 }
 
 
+/* -------------------------
+   CORRECT TAP
+------------------------- */
+
 function tapCorrectButton() {
 
-  if (!gameRunning) return;
+  if (!gameRunning)
+    return;
 
   score++;
 
-  scoreText.textContent = "Score: " + score;
+  scoreText.textContent =
+    "Score: " + score;
+
+  tapSound();
 
   updateDifficulty();
 
   removeTraps();
 
-  createTraps();
-
   moveButton();
 
-  showTapEffect();
 }
 
 
+/* -------------------------
+   DIFFICULTY
+------------------------- */
+
 function updateDifficulty() {
 
+  let newLevel;
+
   let size;
-  let level;
 
   if (score < 10) {
 
     timeLeft = 3;
     size = 120;
-    level = 1;
-
-  } else if (score < 20) {
-
-    timeLeft = 2.3;
-    size = 105;
-    level = 2;
-
-  } else if (score < 30) {
-
-    timeLeft = 1.8;
-    size = 92;
-    level = 3;
-
-  } else if (score < 40) {
-
-    timeLeft = 1.3;
-    size = 78;
-    level = 4;
-
-  } else if (score < 60) {
-
-    timeLeft = 1.0;
-    size = 68;
-    level = 5;
-
-  } else {
-
-    timeLeft = 0.75;
-    size = 58;
-    level = 6;
+    newLevel = 1;
 
   }
 
-  button.style.width = size + "px";
-  button.style.height = size + "px";
+  else if (score < 20) {
 
-  levelText.textContent = "LEVEL " + level;
+    timeLeft = 2.3;
+    size = 105;
+    newLevel = 2;
+
+  }
+
+  else if (score < 30) {
+
+    timeLeft = 1.8;
+    size = 92;
+    newLevel = 3;
+
+  }
+
+  else if (score < 40) {
+
+    timeLeft = 1.3;
+    size = 78;
+    newLevel = 4;
+
+  }
+
+  else if (score < 60) {
+
+    timeLeft = 1.0;
+    size = 68;
+    newLevel = 5;
+
+  }
+
+  else {
+
+    timeLeft = 0.75;
+    size = 58;
+    newLevel = 6;
+
+  }
+
+
+  button.style.width =
+    size + "px";
+
+  button.style.height =
+    size + "px";
+
+
+  if (newLevel !== currentLevel) {
+
+    currentLevel =
+      newLevel;
+
+    levelText.textContent =
+      "LEVEL " + currentLevel;
+
+    levelUp();
+
+  }
+
 
   if (score >= 20) {
-    warning.style.opacity = "1";
+
+    warning.style.opacity =
+      "1";
+
   }
 
 }
 
+
+/* -------------------------
+   LEVEL UP
+------------------------- */
+
+function levelUp() {
+
+  levelUpSound();
+
+  levelFlash.classList.remove(
+    "levelFlashAnimation"
+  );
+
+  levelMessage.classList.remove(
+    "levelMessageAnimation"
+  );
+
+  void levelFlash.offsetWidth;
+
+  levelFlash.classList.add(
+    "levelFlashAnimation"
+  );
+
+  levelMessage.textContent =
+    "LEVEL " + currentLevel;
+
+  levelMessage.classList.add(
+    "levelMessageAnimation"
+  );
+
+
+  /* Rabbit system */
+
+  if (currentLevel >= 2) {
+
+    createRabbits();
+
+  }
+
+}
+
+
+/* -------------------------
+   BUTTON MOVEMENT
+------------------------- */
 
 function moveButton() {
 
@@ -358,43 +778,89 @@ function moveButton() {
   const x =
     margin +
     Math.random() *
-    (window.innerWidth - margin * 2);
+    (window.innerWidth -
+    margin * 2);
 
   const y =
     150 +
     Math.random() *
-    (window.innerHeight - 220);
+    (window.innerHeight -
+    220);
 
-  button.style.left = x + "px";
-  button.style.top = y + "px";
+  button.style.left =
+    x + "px";
+
+  button.style.top =
+    y + "px";
 
 }
 
 
+/* -------------------------
+   TRAPS
+------------------------- */
+
 function createTraps() {
 
-  if (score < 10) return;
+  if (score < 10)
+    return;
 
   let number = 0;
 
-  if (score >= 10 && score < 20) {
-    number = Math.random() < 0.25 ? 1 : 0;
+  if (
+    score >= 10 &&
+    score < 20
+  ) {
+
+    number =
+      Math.random() < 0.25
+        ? 1
+        : 0;
+
   }
 
-  else if (score >= 20 && score < 30) {
-    number = Math.random() < 0.45 ? 1 : 0;
+  else if (
+    score >= 20 &&
+    score < 30
+  ) {
+
+    number =
+      Math.random() < 0.45
+        ? 1
+        : 0;
+
   }
 
-  else if (score >= 30 && score < 40) {
-    number = Math.random() < 0.6 ? 2 : 1;
+  else if (
+    score >= 30 &&
+    score < 40
+  ) {
+
+    number =
+      Math.random() < 0.6
+        ? 2
+        : 1;
+
   }
 
   else if (score >= 40) {
-    number = Math.random() < 0.75 ? 2 : 3;
+
+    number =
+      Math.random() < 0.75
+        ? 2
+        : 3;
+
   }
 
-  for (let i = 0; i < number; i++) {
+
+  for (
+    let i = 0;
+    i < number;
+    i++
+  ) {
+
     createTrap();
+
   }
 
 }
@@ -402,35 +868,54 @@ function createTraps() {
 
 function createTrap() {
 
-  const trap = document.createElement("button");
+  const trap =
+    document.createElement(
+      "button"
+    );
 
-  trap.className = "trap";
-  trap.textContent = "TAP";
+  trap.className =
+    "trap";
+
+  trap.textContent =
+    "TAP";
+
 
   const margin = 70;
 
   const x =
     margin +
     Math.random() *
-    (window.innerWidth - margin * 2);
+    (window.innerWidth -
+    margin * 2);
 
   const y =
     150 +
     Math.random() *
-    (window.innerHeight - 220);
+    (window.innerHeight -
+    220);
 
-  trap.style.left = x + "px";
-  trap.style.top = y + "px";
+  trap.style.left =
+    x + "px";
 
-  trap.addEventListener("click", function() {
+  trap.style.top =
+    y + "px";
 
-    if (gameRunning) {
-      endGame();
-    }
 
-  });
+  trap.onclick =
+    function() {
 
-  document.getElementById("game").appendChild(trap);
+      if (gameRunning) {
+
+        endGame();
+
+      }
+
+    };
+
+
+  document
+    .getElementById("game")
+    .appendChild(trap);
 
   traps.push(trap);
 
@@ -439,40 +924,243 @@ function createTrap() {
 
 function removeTraps() {
 
-  traps.forEach(trap => {
-    trap.remove();
-  });
+  traps.forEach(
+    trap => trap.remove()
+  );
 
   traps = [];
 
 }
 
 
-function showTapEffect() {
+/* -------------------------
+   RABBITS 🐇
+------------------------- */
 
-  flash.style.opacity = "0.18";
+function createRabbits() {
 
-  setTimeout(() => {
-    flash.style.opacity = "0";
-  }, 100);
+  removeRabbits();
+
+
+  let rabbitCount;
+
+  if (currentLevel === 2) {
+
+    rabbitCount = 1;
+
+  }
+
+  else if (currentLevel === 3) {
+
+    rabbitCount = 2;
+
+  }
+
+  else if (currentLevel === 4) {
+
+    rabbitCount = 2;
+
+  }
+
+  else if (currentLevel === 5) {
+
+    rabbitCount = 3;
+
+  }
+
+  else {
+
+    rabbitCount = 4;
+
+  }
+
+
+  for (
+    let i = 0;
+    i < rabbitCount;
+    i++
+  ) {
+
+    createRabbit();
+
+  }
+
+
+  clearInterval(
+    rabbitInterval
+  );
+
+  rabbitInterval =
+    setInterval(
+      animateRabbits,
+      1200 - currentLevel * 100
+    );
 
 }
 
 
+function createRabbit() {
+
+  const rabbit =
+    document.createElement(
+      "div"
+    );
+
+  rabbit.className =
+    "rabbit";
+
+  rabbit.textContent =
+    "🐇";
+
+
+  rabbit.style.left =
+    Math.random() *
+    (window.innerWidth - 70) +
+    "px";
+
+  rabbit.style.top =
+    160 +
+    Math.random() *
+    (window.innerHeight - 230) +
+    "px";
+
+
+  rabbit.onclick =
+    function() {
+
+      if (gameRunning) {
+
+        endGame();
+
+      }
+
+    };
+
+
+  document
+    .getElementById("game")
+    .appendChild(rabbit);
+
+  rabbits.push(rabbit);
+
+}
+
+
+function animateRabbits() {
+
+  if (!gameRunning)
+    return;
+
+
+  rabbits.forEach(
+    rabbit => {
+
+      rabbit.classList.remove(
+        "jump"
+      );
+
+      void rabbit.offsetWidth;
+
+      rabbit.classList.add(
+        "jump"
+      );
+
+      rabbitSound();
+
+
+      setTimeout(() => {
+
+        if (!gameRunning)
+          return;
+
+
+        const x =
+          Math.random() *
+          (window.innerWidth - 70);
+
+        const y =
+          150 +
+          Math.random() *
+          (window.innerHeight - 220);
+
+
+        rabbit.style.left =
+          x + "px";
+
+        rabbit.style.top =
+          y + "px";
+
+      }, 500);
+
+    }
+  );
+
+}
+
+
+function removeRabbits() {
+
+  rabbits.forEach(
+    rabbit => rabbit.remove()
+  );
+
+  rabbits = [];
+
+}
+
+
+/* -------------------------
+   EFFECT
+------------------------- */
+
+function showTapEffect() {
+
+  levelFlash.style.opacity =
+    "0.08";
+
+  setTimeout(() => {
+
+    levelFlash.style.opacity =
+      "0";
+
+  }, 80);
+
+}
+
+
+/* -------------------------
+   GAME OVER
+------------------------- */
+
 function endGame() {
 
-  if (!gameRunning) return;
+  if (!gameRunning)
+    return;
 
   gameRunning = false;
 
-  clearInterval(timerInterval);
+  clearInterval(
+    timerInterval
+  );
 
-  button.style.display = "none";
+  clearInterval(
+    rabbitInterval
+  );
+
+  button.style.display =
+    "none";
 
   removeTraps();
+  removeRabbits();
+
 
   let best =
-    Number(localStorage.getItem("dontTapBest")) || 0;
+    Number(
+      localStorage.getItem(
+        "dontTapBest"
+      )
+    ) || 0;
+
 
   if (score > best) {
 
@@ -485,13 +1173,17 @@ function endGame() {
 
   }
 
+
   finalScore.textContent =
     "Score: " + score;
 
   bestScore.textContent =
     "Best Score: " + best;
 
-  gameOverScreen.classList.remove("hidden");
+
+  gameOverScreen.classList.remove(
+    "hidden"
+  );
 
 }
 
