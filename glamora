@@ -1,0 +1,1046 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>GLAMORA</title>
+
+<style>
+
+*{
+box-sizing:border-box;
+}
+
+body{
+margin:0;
+font-family:Arial, sans-serif;
+background:#f8edf3;
+color:#4b3540;
+overflow:hidden;
+}
+
+button{
+font-family:inherit;
+}
+
+#app{
+height:100vh;
+display:flex;
+flex-direction:column;
+}
+
+/* HEADER */
+
+header{
+height:70px;
+display:flex;
+align-items:center;
+justify-content:space-between;
+padding:0 25px;
+background:#fff9fc;
+border-bottom:1px solid #efdce5;
+}
+
+.logo{
+font-size:25px;
+font-weight:bold;
+letter-spacing:3px;
+color:#b45f7d;
+}
+
+.stageName{
+font-size:12px;
+color:#9d7d89;
+letter-spacing:1px;
+}
+
+/* MAIN */
+
+.main{
+flex:1;
+display:flex;
+min-height:0;
+}
+
+/* MODEL */
+
+.modelArea{
+flex:1;
+position:relative;
+display:flex;
+align-items:center;
+justify-content:center;
+background:
+radial-gradient(
+circle at 50% 35%,
+#fff8fb 0%,
+#f8e7ef 55%,
+#efd9e4 100%
+);
+}
+
+.model{
+position:relative;
+width:310px;
+height:570px;
+}
+
+/* BODY */
+
+.body{
+position:absolute;
+bottom:0;
+left:80px;
+width:150px;
+height:280px;
+background:#e9b79f;
+border-radius:80px 80px 35px 35px;
+z-index:2;
+}
+
+/* NECK */
+
+.neck{
+position:absolute;
+top:205px;
+left:130px;
+width:50px;
+height:70px;
+background:#e9b79f;
+z-index:3;
+}
+
+/* FACE */
+
+.face{
+position:absolute;
+top:75px;
+left:92px;
+width:126px;
+height:155px;
+background:#edbea7;
+border-radius:50% 50% 46% 46%;
+z-index:5;
+box-shadow:
+0 5px 15px rgba(80,40,50,.08);
+}
+
+/* EARS */
+
+.ear{
+position:absolute;
+top:135px;
+width:25px;
+height:42px;
+background:#e7b49e;
+border-radius:50%;
+z-index:4;
+}
+
+.ear.left{
+left:75px;
+}
+
+.ear.right{
+right:75px;
+}
+
+/* EYES */
+
+.eye{
+position:absolute;
+top:140px;
+width:22px;
+height:9px;
+border-bottom:3px solid #4b3038;
+border-radius:50%;
+z-index:7;
+}
+
+.eye.left{
+left:118px;
+}
+
+.eye.right{
+right:118px;
+}
+
+/* EYELINER */
+
+.eyeliner{
+position:absolute;
+top:137px;
+width:30px;
+height:14px;
+border-top:3px solid transparent;
+z-index:8;
+}
+
+.eyeliner.left{
+left:113px;
+}
+
+.eyeliner.right{
+right:113px;
+}
+
+/* NOSE */
+
+.nose{
+position:absolute;
+top:153px;
+left:151px;
+width:8px;
+height:18px;
+border-right:2px solid rgba(130,75,75,.25);
+border-radius:50%;
+z-index:7;
+}
+
+/* LIPS */
+
+.lips{
+position:absolute;
+top:184px;
+left:143px;
+width:25px;
+height:12px;
+background:#bd637e;
+border-radius:50%;
+z-index:8;
+}
+
+/* BLUSH */
+
+.blush{
+position:absolute;
+top:168px;
+width:28px;
+height:14px;
+background:#e58da0;
+border-radius:50%;
+opacity:0;
+filter:blur(5px);
+z-index:7;
+}
+
+.blush.left{
+left:103px;
+}
+
+.blush.right{
+right:103px;
+}
+
+/* EYESHADOW */
+
+.shadow{
+position:absolute;
+top:132px;
+width:30px;
+height:18px;
+border-radius:50%;
+background:#9b6684;
+opacity:0;
+filter:blur(3px);
+z-index:6;
+}
+
+.shadow.left{
+left:114px;
+}
+
+.shadow.right{
+right:114px;
+}
+
+/* HAIR */
+
+.hair{
+position:absolute;
+top:38px;
+left:65px;
+width:180px;
+height:210px;
+background:#4a2e2b;
+border-radius:95px 95px 65px 65px;
+z-index:4;
+}
+
+.hair.long{
+height:340px;
+border-radius:95px;
+}
+
+.hair.blonde{
+background:#c99a62;
+}
+
+.hair.black{
+background:#211c24;
+}
+
+.hair.pink{
+background:#c47d9e;
+}
+
+.hair.wavy{
+border-radius:80px 100px 70px 90px;
+}
+
+/* CLOTHES */
+
+.clothes{
+position:absolute;
+bottom:0;
+left:67px;
+width:176px;
+height:300px;
+background:#b96b88;
+clip-path:
+polygon(
+25% 0,
+75% 0,
+100% 35%,
+90% 100%,
+10% 100%,
+0 35%
+);
+z-index:3;
+}
+
+.clothes.black{
+background:#27232a;
+}
+
+.clothes.white{
+background:#f5edf0;
+}
+
+.clothes.pink{
+background:#d98cab;
+}
+
+.clothes.gold{
+background:linear-gradient(
+135deg,
+#b98b43,
+#f1d88c,
+#9b7134
+);
+}
+
+/* ACCESSORY */
+
+.earrings{
+position:absolute;
+top:166px;
+width:12px;
+height:20px;
+border:3px solid #d7a83e;
+border-radius:50%;
+z-index:10;
+opacity:0;
+}
+
+.earrings.left{
+left:83px;
+}
+
+.earrings.right{
+right:83px;
+}
+
+/* PANEL */
+
+.panel{
+width:390px;
+background:#fff9fc;
+border-left:1px solid #efdce5;
+padding:25px;
+overflow-y:auto;
+}
+
+.panel h2{
+margin:0 0 5px;
+font-size:22px;
+}
+
+.panel p{
+margin:0 0 20px;
+font-size:12px;
+color:#a0808c;
+}
+
+.category{
+margin-bottom:25px;
+}
+
+.categoryTitle{
+font-size:11px;
+letter-spacing:1px;
+color:#a56c82;
+margin-bottom:10px;
+font-weight:bold;
+}
+
+.options{
+display:grid;
+grid-template-columns:repeat(3,1fr);
+gap:8px;
+}
+
+.option{
+border:1px solid #ead5df;
+background:#fff;
+border-radius:12px;
+padding:10px 5px;
+cursor:pointer;
+font-size:11px;
+color:#614652;
+}
+
+.option:hover{
+background:#fbeaf1;
+}
+
+.option.active{
+border:2px solid #c36b89;
+background:#f8dce7;
+}
+
+.color{
+height:30px;
+width:30px;
+border-radius:50%;
+margin:auto;
+margin-bottom:5px;
+}
+
+/* RUNWAY */
+
+#runwayScreen{
+position:fixed;
+inset:0;
+background:
+linear-gradient(
+180deg,
+#17131a,
+#33222e
+);
+z-index:100;
+display:none;
+align-items:center;
+justify-content:center;
+flex-direction:column;
+color:white;
+text-align:center;
+}
+
+#runwayScreen.show{
+display:flex;
+}
+
+.runwayTitle{
+font-size:42px;
+letter-spacing:7px;
+margin-bottom:10px;
+}
+
+.runwaySub{
+color:#e5c5d3;
+margin-bottom:25px;
+}
+
+.score{
+font-size:25px;
+margin-bottom:25px;
+}
+
+.runwayButton{
+border:0;
+background:#e7a6bd;
+color:#402d37;
+padding:14px 30px;
+border-radius:30px;
+font-weight:bold;
+cursor:pointer;
+}
+
+.finish{
+position:absolute;
+bottom:0;
+width:100%;
+height:25%;
+background:
+linear-gradient(
+90deg,
+#241b23,
+#5a3d4c,
+#241b23
+);
+}
+
+/* MOBILE */
+
+@media(max-width:800px){
+
+.main{
+flex-direction:column;
+overflow:auto;
+}
+
+.modelArea{
+min-height:500px;
+}
+
+.panel{
+width:100%;
+border-left:0;
+border-top:1px solid #efdce5;
+}
+
+}
+
+</style>
+</head>
+
+<body>
+
+<div id="app">
+
+<header>
+
+<div class="logo">
+GLAMORA
+</div>
+
+<div class="stageName">
+PREPARE FOR THE RUNWAY
+</div>
+
+</header>
+
+
+<div class="main">
+
+<!-- MODEL -->
+
+<div class="modelArea">
+
+<div class="model">
+
+<div class="hair" id="hair"></div>
+
+<div class="body" id="body"></div>
+
+<div class="neck"></div>
+
+<div class="ear left"></div>
+<div class="ear right"></div>
+
+<div class="face"></div>
+
+<div class="eye left"></div>
+<div class="eye right"></div>
+
+<div class="eyeliner left"></div>
+<div class="eyeliner right"></div>
+
+<div class="shadow left" id="shadowL"></div>
+<div class="shadow right" id="shadowR"></div>
+
+<div class="blush left" id="blushL"></div>
+<div class="blush right" id="blushR"></div>
+
+<div class="nose"></div>
+
+<div class="lips" id="lips"></div>
+
+<div class="earrings left" id="earringL"></div>
+<div class="earrings right" id="earringR"></div>
+
+<div class="clothes" id="clothes"></div>
+
+</div>
+
+</div>
+
+
+<!-- PANEL -->
+
+<div class="panel">
+
+<h2>Style Your Model</h2>
+
+<p>
+Create the perfect runway look.
+</p>
+
+
+<!-- HAIR -->
+
+<div class="category">
+
+<div class="categoryTitle">
+HAIR
+</div>
+
+<div class="options">
+
+<button
+class="option active"
+onclick="hairStyle('classic',this)"
+>
+Classic
+</button>
+
+<button
+class="option"
+onclick="hairStyle('long',this)"
+>
+Long
+</button>
+
+<button
+class="option"
+onclick="hairStyle('wavy',this)"
+>
+Wavy
+</button>
+
+<button
+class="option"
+onclick="hairColor('blonde',this)"
+>
+Blonde
+</button>
+
+<button
+class="option"
+onclick="hairColor('black',this)"
+>
+Black
+</button>
+
+<button
+class="option"
+onclick="hairColor('pink',this)"
+>
+Pink
+</button>
+
+</div>
+
+</div>
+
+
+<!-- MAKEUP -->
+
+<div class="category">
+
+<div class="categoryTitle">
+MAKEUP
+</div>
+
+<div class="options">
+
+<button
+class="option"
+onclick="makeup('natural',this)"
+>
+Natural
+</button>
+
+<button
+class="option"
+onclick="makeup('soft',this)"
+>
+Soft Glam
+</button>
+
+<button
+class="option"
+onclick="makeup('bold',this)"
+>
+Bold
+</button>
+
+<button
+class="option"
+onclick="lip('pink',this)"
+>
+Pink Lips
+</button>
+
+<button
+class="option"
+onclick="lip('red',this)"
+>
+Red Lips
+</button>
+
+<button
+class="option"
+onclick="lip('dark',this)"
+>
+Berry Lips
+</button>
+
+</div>
+
+</div>
+
+
+<!-- OUTFIT -->
+
+<div class="category">
+
+<div class="categoryTitle">
+OUTFIT
+</div>
+
+<div class="options">
+
+<button
+class="option"
+onclick="outfit('pink',this)"
+>
+Pink Dress
+</button>
+
+<button
+class="option"
+onclick="outfit('black',this)"
+>
+Black Dress
+</button>
+
+<button
+class="option"
+onclick="outfit('white',this)"
+>
+White Dress
+</button>
+
+<button
+class="option"
+onclick="outfit('gold',this)"
+>
+Gold Look
+</button>
+
+</div>
+
+</div>
+
+
+<!-- ACCESSORIES -->
+
+<div class="category">
+
+<div class="categoryTitle">
+ACCESSORIES
+</div>
+
+<div class="options">
+
+<button
+class="option"
+onclick="earrings(true,this)"
+>
+Earrings
+</button>
+
+<button
+class="option"
+onclick="earrings(false,this)"
+>
+No Earrings
+</button>
+
+</div>
+
+</div>
+
+
+<button
+class="startButton"
+style="width:100%;margin-top:5px"
+onclick="showRunway()"
+>
+✨ SEND HER TO THE RUNWAY
+</button>
+
+</div>
+
+</div>
+
+</div>
+
+
+<!-- RUNWAY -->
+
+<div id="runwayScreen">
+
+<div class="runwayTitle">
+RUNWAY
+</div>
+
+<div class="runwaySub">
+THE SHOW IS ABOUT TO BEGIN
+</div>
+
+<div class="score" id="score">
+STYLE SCORE: 0 / 100
+</div>
+
+<button
+class="runwayButton"
+onclick="closeRunway()"
+>
+STYLE AGAIN
+</button>
+
+<div class="finish"></div>
+
+</div>
+
+
+<script>
+
+const hair =
+document.getElementById("hair");
+
+const clothes =
+document.getElementById("clothes");
+
+const lips =
+document.getElementById("lips");
+
+const shadowL =
+document.getElementById("shadowL");
+
+const shadowR =
+document.getElementById("shadowR");
+
+const blushL =
+document.getElementById("blushL");
+
+const blushR =
+document.getElementById("blushR");
+
+const earringL =
+document.getElementById("earringL");
+
+const earringR =
+document.getElementById("earringR");
+
+
+let points = 0;
+
+
+/* =====================
+HAIR
+===================== */
+
+function hairStyle(style,btn){
+
+hair.className="hair";
+
+if(style==="long"){
+hair.classList.add("long");
+}
+
+if(style==="wavy"){
+hair.classList.add("wavy");
+}
+
+select(btn);
+
+points += 8;
+
+}
+
+
+function hairColor(color,btn){
+
+hair.className="hair";
+
+hair.classList.add(color);
+
+select(btn);
+
+points += 6;
+
+}
+
+
+/* =====================
+MAKEUP
+===================== */
+
+function makeup(type,btn){
+
+shadowL.style.opacity=0;
+shadowR.style.opacity=0;
+
+blushL.style.opacity=0;
+blushR.style.opacity=0;
+
+
+if(type==="soft"){
+
+shadowL.style.opacity=.65;
+shadowR.style.opacity=.65;
+
+blushL.style.opacity=.55;
+blushR.style.opacity=.55;
+
+}
+
+if(type==="bold"){
+
+shadowL.style.opacity=1;
+shadowR.style.opacity=1;
+
+blushL.style.opacity=.85;
+blushR.style.opacity=.85;
+
+}
+
+select(btn);
+
+points += 10;
+
+}
+
+
+/* =====================
+LIPS
+===================== */
+
+function lip(color,btn){
+
+if(color==="pink"){
+lips.style.background="#d27c98";
+}
+
+if(color==="red"){
+lips.style.background="#a82f4e";
+}
+
+if(color==="dark"){
+lips.style.background="#71354e";
+}
+
+select(btn);
+
+points += 7;
+
+}
+
+
+/* =====================
+OUTFIT
+===================== */
+
+function outfit(color,btn){
+
+clothes.className="clothes";
+
+clothes.classList.add(color);
+
+select(btn);
+
+points += 15;
+
+}
+
+
+/* =====================
+EARRINGS
+===================== */
+
+function earrings(show,btn){
+
+earringL.style.opacity =
+show ? 1 : 0;
+
+earringR.style.opacity =
+show ? 1 : 0;
+
+select(btn);
+
+if(show){
+points += 5;
+}
+
+}
+
+
+/* =====================
+BUTTON ACTIVE
+===================== */
+
+function select(btn){
+
+const group =
+btn.parentElement;
+
+group
+.querySelectorAll(".option")
+.forEach(
+b=>b.classList.remove("active")
+);
+
+btn.classList.add("active");
+
+}
+
+
+/* =====================
+RUNWAY
+===================== */
+
+function showRunway(){
+
+let finalScore =
+Math.min(
+100,
+50 + points
+);
+
+document.getElementById(
+"score"
+).textContent =
+"STYLE SCORE: " +
+finalScore +
+" / 100";
+
+document
+.getElementById(
+"runwayScreen"
+)
+.classList.add("show");
+
+}
+
+
+function closeRunway(){
+
+document
+.getElementById(
+"runwayScreen"
+)
+.classList.remove("show");
+
+}
+
+</script>
+
+</body>
+
+</html>
