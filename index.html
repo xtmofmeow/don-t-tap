@@ -2,682 +2,456 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>DON'T TAP · Cozy Pixel Room</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no">
+<title>DON'T TAP</title>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Pixelify+Sans:wght@500;600;700&family=Press+Start+2P&display=swap');
 
 :root{
-  --ink:#392426;--cream:#f5dfbf;--paper:#f8e7cc;--pink:#d87887;--pink2:#efacb4;
-  --wine:#663844;--brown:#4b342e;--green:#536844;--dark:#24191b;
+  --cream:#f7e4c7; --cream2:#f0d1aa; --ink:#3b2526; --pink:#d77b89;
+  --pink2:#efabb3; --wine:#633643; --brown:#553a31; --green:#526b46;
+  --shadow:#28191b;
 }
 *{box-sizing:border-box}
-html,body{margin:0;width:100%;height:100%;overflow:hidden}
-body{font-family:"Pixelify Sans",sans-serif;background:#2b2021;color:var(--ink);image-rendering:pixelated}
-button{font:inherit;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#24191a}
+body{font-family:"Pixelify Sans",sans-serif;color:var(--ink);image-rendering:pixelated}
+button{font:inherit;cursor:pointer;-webkit-tap-highlight-color:transparent}
 
 #game{
   position:relative;width:100vw;height:100vh;overflow:hidden;
-  background:#4c3935 url("assets/cozy_room_background.png?v=2") center/cover no-repeat;
+  background:#3b2929 url("assets/cozy_room_background.png?v=9") center bottom/cover no-repeat;
 }
-#game:after{
-  content:"";position:absolute;inset:0;pointer-events:none;z-index:1;
-  background:linear-gradient(180deg,rgba(25,17,18,.18),rgba(25,17,18,.08) 55%,rgba(20,13,14,.32));
-  mix-blend-mode:multiply;
-}
-#game>*{position:absolute}
-
-/* tiny decorative pixel vines */
-.vine{z-index:2;opacity:.9}
-.vine.one{left:0;top:0;width:120px;height:220px;border-left:8px solid #394c31;border-bottom:8px solid #394c31;border-radius:0 0 80px 0}
-.vine.two{right:0;top:0;width:110px;height:190px;border-right:8px solid #394c31;border-bottom:8px solid #394c31;border-radius:0 0 0 80px}
-
-/* HUD */
-.hud{
-  top:18px;left:50%;transform:translateX(-50%);z-index:30;
-  width:min(760px,92vw);display:grid;grid-template-columns:1.2fr 1fr 1fr 1fr;
-  gap:0;padding:9px;background:var(--paper);border:4px solid #68453b;
-  box-shadow:6px 6px 0 var(--dark),inset 0 0 0 3px #d4a878;
-}
-.stat{text-align:center;border-right:2px solid #d2ad87;padding:4px}
-.stat:last-child{border:0}
-.label{font-family:"Press Start 2P";font-size:8px;color:#735047;margin-bottom:7px}
-.value{font-family:"Press Start 2P";font-size:13px;color:#342326}
-#hearts{font-size:18px;letter-spacing:2px;color:#c85f70}
-#combo{
-  z-index:31;left:50%;bottom:30px;transform:translateX(-50%);
-  background:var(--paper);border:3px solid #71413f;box-shadow:4px 5px 0 var(--dark);
-  padding:8px 16px;font-family:"Press Start 2P";font-size:9px;opacity:0;transition:.2s;
+#game::after{
+  content:"";position:absolute;inset:0;z-index:1;pointer-events:none;
+  background:linear-gradient(180deg,rgba(27,17,18,.10),rgba(27,17,18,.03) 48%,rgba(36,20,18,.18));
 }
 
-/* Buttons */
-#tapButton{
-  z-index:15;width:150px;height:150px;display:none;position:absolute;
-  transform:translate(-50%,-50%);border-radius:50%;border:5px solid #713d49;
-  background:radial-gradient(circle at 35% 25%,#f7c4c9 0 7%,transparent 8%),#d77987;
-  color:#fff0da;font-family:"Press Start 2P";font-size:18px;
-  box-shadow:0 8px 0 #44242c,inset 0 0 0 5px #ef9ea7;
-  cursor:pointer;z-index:20;
-}
-#tapButton:active{transform:translate(-50%,-50%) scale(.92);box-shadow:0 4px 0 #44242c,inset 0 0 0 5px #ef9ea7}
+/* decorative pixel assets */
+.decor{position:absolute;z-index:4;pointer-events:none;image-rendering:pixelated;filter:drop-shadow(3px 4px 0 rgba(30,18,17,.25))}
+#plant{left:2%;bottom:7%;width:70px}
+#bow{right:5%;top:9%;width:48px}
+#badge{right:2.5%;top:13%;width:44px}
 
-.trap{
-  position:absolute;z-index:18;width:78px;height:78px;border-radius:50%;
-  border:4px solid #41212a;background:#633442;color:#f8e8c8;
-  box-shadow:0 6px 0 #24171a,inset 0 0 0 4px #91545f;
-  font-family:"Press Start 2P";font-size:25px;cursor:pointer;transform:translate(-50%,-50%);
-}
-.trap:after{content:"";position:absolute;inset:10px;border:2px dashed #d59aa0;border-radius:50%;pointer-events:none}
-
-/* Rabbits */
-.rabbit{
-  position:absolute;z-index:16;width:auto;height:118px;max-width:180px;object-fit:contain;
-  image-rendering:pixelated;cursor:pointer;pointer-events:auto;
-  filter:drop-shadow(5px 7px 0 rgba(25,15,15,.35));
-  user-select:none;overflow:visible;
-}
-.rabbit.hit{animation:rabbitHit .16s steps(2) 2}
-@keyframes rabbitHit{50%{filter:drop-shadow(5px 7px 0 rgba(25,15,15,.35)) brightness(1.7)}}
-
-/* Level flash */
-#levelFlash{inset:0;z-index:40;pointer-events:none;opacity:0;background:radial-gradient(circle,#fff5df 0 4%,rgba(245,168,185,.72) 13%,transparent 52%)}
-#levelFlash.flash{animation:flash .55s steps(5) forwards}
-@keyframes flash{0%{opacity:0}20%{opacity:1}100%{opacity:0}}
-
-#levelModal,#startScreen,#howScreen,#gameOverScreen{
-  inset:0;z-index:50;display:flex;align-items:center;justify-content:center;
-  background:rgba(25,17,18,.55);
-}
-.hidden{display:none!important}
-.card{
-  width:min(520px,88vw);padding:30px 34px 34px;text-align:center;
-  background:var(--paper);border:6px solid #684039;
-  box-shadow:9px 9px 0 var(--dark),inset 0 0 0 4px #d5a873;
+/* shared parchment card */
+.parchment{
+  background:linear-gradient(#fae9cd,#f0d5b1);
+  border:5px solid #70473d;
+  box-shadow:8px 8px 0 var(--shadow),inset 0 0 0 3px #d1a474;
   position:relative;
 }
-.card:before{content:"✦  ♡  ✦";display:block;color:#c96b78;font-size:16px;margin-bottom:12px}
-h1{font-family:"Press Start 2P";font-size:30px;line-height:1.45;margin:0 0 14px;color:#412423;text-shadow:3px 3px #d7aa7a}
-.sub{font-size:18px;line-height:1.35;color:#70514a;margin-bottom:22px}
+.parchment::before{
+  content:"✦  ♡  ✦";display:block;text-align:center;color:#ca7180;font-size:15px;
+}
+
+/* START MENU */
+#startScreen,#gameOverScreen,#howScreen,#levelModal{
+  position:absolute;inset:0;z-index:60;display:flex;align-items:center;justify-content:center;
+  background:rgba(29,18,19,.30);
+}
+#startScreen{align-items:center;justify-content:flex-start;padding-left:8vw}
+.menuCard{
+  width:min(350px,82vw);padding:22px 26px 25px;text-align:center;
+}
+.menuCard h1{
+  font-family:"Press Start 2P";font-size:31px;line-height:1.45;margin:8px 0 5px;
+  text-shadow:3px 3px #d6a36f;
+}
+.tagline{font-size:18px;color:#674843;margin:4px 0 13px}
+.menuRabbit{width:150px;height:120px;object-fit:contain;image-rendering:pixelated;display:block;margin:-3px auto -4px}
+.cushion{
+  width:145px;height:22px;border-radius:50%;background:#bd6d76;margin:-12px auto 12px;
+  box-shadow:inset 0 4px 0 #eaa0a7,0 5px 0 #63343d;
+}
+.bestBox{margin:12px auto 2px;padding:9px 10px;border:3px solid #8a5b48;background:#f7dfbd;font-family:"Press Start 2P";font-size:9px}
 .btn{
-  border:4px solid #693b43;background:#d77986;color:#fff0dc;
-  padding:13px 25px;font-family:"Press Start 2P";font-size:11px;
-  box-shadow:0 6px 0 #43262d;cursor:pointer;margin:5px;
+  min-width:175px;padding:12px 20px;margin:5px;border:4px solid #693b43;
+  background:var(--pink);color:#fff1dd;font-family:"Press Start 2P";font-size:10px;
+  box-shadow:0 6px 0 #43252c;
 }
-.btn.secondary{background:#f3dcbb;color:#4b302c}
-.btn:active{transform:translateY(3px);box-shadow:0 3px 0 #43262d}
+.btn.secondary{background:#f3dcb9;color:#4c302d}
+.btn:active{transform:translateY(3px);box-shadow:0 3px 0 #43252c}
 
-#levelModal .card{width:min(500px,88vw)}
-#levelTitle{font-family:"Press Start 2P";font-size:14px;color:#b55e6b}
-#levelName{font-family:"Press Start 2P";font-size:24px;margin:14px 0}
-#levelText{font-size:20px;line-height:1.35;color:#69483f}
-#modalRabbit{width:180px;height:125px;object-fit:contain;image-rendering:pixelated;filter:drop-shadow(4px 6px 0 rgba(0,0,0,.22))}
+/* HOW */
+#howScreen .menuCard{max-width:450px}
+.howText{font-size:19px;line-height:1.45;margin:14px 0 18px}
 
-#hint{z-index:31;top:115px;left:50%;transform:translateX(-50%);font-family:"Press Start 2P";font-size:7px;color:#f5dfbf;opacity:.9;white-space:nowrap}
+/* HUD */
+#hud{
+  position:absolute;z-index:30;top:17px;left:50%;transform:translateX(-50%);
+  width:min(650px,90vw);display:grid;grid-template-columns:1fr 1fr 1fr 1fr;
+  background:linear-gradient(#fae8c9,#f0d3ad);border:5px solid #70473d;
+  box-shadow:7px 7px 0 var(--shadow),inset 0 0 0 3px #d2a673;padding:7px;
+}
+.stat{text-align:center;border-right:2px solid #d0aa80;padding:3px 4px}
+.stat:last-child{border:0}
+.label{font-family:"Press Start 2P";font-size:7px;color:#6e4840;margin-bottom:7px}
+.value{font-family:"Press Start 2P";font-size:12px}
+#hearts{font-size:17px;letter-spacing:2px;color:#c75f70;line-height:1}
+#hint{
+  position:absolute;z-index:31;top:106px;left:50%;transform:translateX(-50%);
+  font-family:"Press Start 2P";font-size:7px;color:#f2ddbc;white-space:nowrap;
+  text-shadow:2px 2px #332023;
+}
 
-/* sound toggle */
+/* controls */
 #soundToggle{
-  z-index:60;right:18px;top:18px;border:4px solid #684039;background:var(--paper);
-  color:#5d3d36;box-shadow:4px 4px 0 var(--dark);padding:9px 10px;font-family:"Press Start 2P";font-size:8px;
+  position:absolute;z-index:70;right:16px;top:16px;padding:9px 11px;
+  border:4px solid #70473d;background:var(--cream);color:#593b36;
+  box-shadow:4px 4px 0 var(--shadow);font-family:"Press Start 2P";font-size:8px;
 }
-
-@media(max-width:700px){
-  .hud{top:10px;width:96vw;padding:6px;grid-template-columns:1fr 1fr 1fr 1fr}
-  .label{font-size:6px}.value{font-size:10px}#hearts{font-size:14px}
-  #soundToggle{top:76px;right:10px;font-size:7px;padding:7px}
-  #hint{top:126px;font-size:6px}
-  #tapButton{width:118px;height:118px;font-size:14px}
-  .rabbit{width:128px;height:100px}
-  .trap{width:64px;height:64px;font-size:19px}
-  .card{padding:23px 18px 25px}.card h1{font-size:22px}.sub{font-size:16px}
-}
-</style>
-
-<style id="full-cozy-update">
-/* FULL COZY PIXEL ROOM UPDATE */
-#game{
-  background:#3b2929 url("assets/cozy_room_background.png?v=4") center/cover no-repeat !important;
-}
-#game:before{
-  content:"";
-  position:absolute;inset:0;z-index:0;pointer-events:none;
-  background:
-    linear-gradient(180deg,rgba(35,22,24,.10) 0 55%,rgba(45,27,25,.08) 55% 57%,rgba(91,58,43,.34) 57% 100%),
-    linear-gradient(90deg,rgba(255,210,172,.05),transparent 35%,rgba(255,202,175,.04));
-  image-rendering:pixelated;
-}
-/* Make the floor feel like the lower wooden half in the reference. */
-#game .floorGlow{
-  position:absolute;z-index:2;left:0;right:0;bottom:0;height:43%;
-  pointer-events:none;
-  background:
-    repeating-linear-gradient(0deg,rgba(45,28,24,.10) 0 3px,transparent 3px 34px),
-    repeating-linear-gradient(90deg,rgba(45,28,24,.06) 0 2px,transparent 2px 48px),
-    linear-gradient(180deg,rgba(130,82,57,.12),rgba(91,57,43,.30));
-  border-top:7px solid rgba(64,39,31,.65);
-}
-/* warm window light */
-#game .windowGlow{
-  position:absolute;z-index:2;left:2%;top:13%;width:18%;height:29%;
-  pointer-events:none;
-  background:radial-gradient(ellipse at center,rgba(255,198,158,.20),transparent 70%);
-  filter:blur(1px);
-}
-/* Reference-like hanging plant/props using the supplied pixel assets. */
-.pixelDecor{
-  position:absolute;z-index:5;pointer-events:none;image-rendering:pixelated;
-  filter:drop-shadow(3px 4px 0 rgba(35,20,18,.28));
-}
-#plantDecor{left:2.4%;bottom:7%;width:76px;height:76px;object-fit:contain}
-#bowDecor{right:5%;top:18%;width:58px;height:58px;object-fit:contain}
-#badgeDecor{right:2.8%;top:9%;width:48px;height:48px;object-fit:contain;opacity:.8}
-
-/* Reference-style controls */
 #tapButton{
-  width:154px!important;height:154px!important;
-  border:5px solid #7a3e4a!important;
-  background:
-    radial-gradient(circle at 35% 25%,#ffd1d2 0 5%,transparent 6%),
-    radial-gradient(circle at 50% 50%,#dc7f8e 0 67%,#c96a7b 68% 100%)!important;
-  box-shadow:0 8px 0 #4b2730,inset 0 0 0 6px #efabb4!important;
-  font-size:18px!important;
+  position:absolute;z-index:22;width:148px;height:148px;border-radius:50%;
+  transform:translate(-50%,-50%);border:5px solid #713d49;
+  background:radial-gradient(circle at 34% 24%,#ffd5d5 0 5%,transparent 6%),#d67a88;
+  color:#fff0dc;font-family:"Press Start 2P";font-size:17px;
+  box-shadow:0 8px 0 #47262e,inset 0 0 0 6px #efabb3;
+  display:none;
 }
-#tapButton:after{
-  content:"";
-  position:absolute;inset:12px;border:2px dashed rgba(255,232,220,.8);
-  border-radius:50%;pointer-events:none;
-}
+#tapButton::after{content:"";position:absolute;inset:11px;border:2px dashed rgba(255,235,221,.75);border-radius:50%}
+#tapButton:active{transform:translate(-50%,-50%) scale(.94);box-shadow:0 4px 0 #47262e,inset 0 0 0 6px #efabb3}
+
 .trap{
-  width:80px!important;height:80px!important;
-  background:#613443!important;border-color:#3e2028!important;
-  box-shadow:0 6px 0 #27171a,inset 0 0 0 4px #8d5260!important;
+  position:absolute;z-index:24;width:75px;height:75px;border-radius:50%;
+  border:4px solid #3f2028;background:#613441;color:#f5e5c9;
+  box-shadow:0 6px 0 #26171a,inset 0 0 0 4px #8c5360;
+  font-family:"Press Start 2P";font-size:24px;transform:translate(-50%,-50%);
 }
-/* Grounded bunny: shadow stays on the floor while sprite jumps. */
+.trap::after{content:"";position:absolute;inset:10px;border:2px dashed #d39ba2;border-radius:50%}
+
+/* rabbits */
 .rabbit{
-  z-index:12!important;
-  width:auto!important;height:118px!important;max-width:180px!important;
-  filter:drop-shadow(6px 9px 0 rgba(30,18,17,.34))!important;
-  transform-origin:50% 100%!important;
-  overflow:visible!important;
+  position:absolute;z-index:21;width:150px;height:auto;max-height:120px;
+  object-fit:contain;image-rendering:pixelated;user-select:none;cursor:pointer;
+  transform-origin:50% 100%;filter:drop-shadow(5px 8px 0 rgba(29,17,16,.32));
 }
-.rabbitGroundShadow{
-  position:absolute;z-index:11;width:110px;height:18px;border-radius:50%;
-  background:rgba(35,20,18,.25);filter:blur(2px);pointer-events:none;
+.rabbitShadow{
+  position:absolute;z-index:20;width:92px;height:16px;border-radius:50%;
+  background:rgba(31,17,16,.28);pointer-events:none;filter:blur(1px);
 }
-/* parchment HUD */
-.hud{
-  z-index:30!important;
-  background:linear-gradient(#f9e7c9,#f2d7b2)!important;
-  border:5px solid #70483e!important;
-  box-shadow:7px 7px 0 #27191b,inset 0 0 0 3px #d0a474!important;
+.rabbitAlert{
+  position:absolute;z-index:25;width:58px;height:auto;image-rendering:pixelated;pointer-events:none;
 }
-.stat{border-right:2px solid #d2ad87!important}
-.label{color:#70483f!important}
-.value{color:#342326!important}
-/* Level card: ribbon/leaf feel */
-#levelModal .card{
-  background:linear-gradient(#f9e6c8,#f2d7b1)!important;
-  border-color:#74473f!important;
+#combo{
+  position:absolute;z-index:31;left:50%;bottom:25px;transform:translateX(-50%);
+  padding:8px 15px;background:var(--cream);border:3px solid #70473d;
+  box-shadow:4px 5px 0 var(--shadow);font-family:"Press Start 2P";font-size:8px;opacity:0
 }
-#levelModal .card:before{content:"✦  ♡  🎀  ♡  ✦"!important}
-#levelText b{color:#8d4c5b}
-#modalRabbit{image-rendering:pixelated!important}
-/* cozy footer-like hint */
-#hint{top:118px!important;color:#f1ddbd!important}
+
+/* LEVEL UP */
+#levelModal .levelCard{
+  width:min(430px,86vw);padding:22px 26px 25px;text-align:center;
+}
+.levelUp{font-family:"Press Start 2P";font-size:16px;color:#c86473;text-shadow:2px 2px #eab1a0}
+.levelNum{font-family:"Press Start 2P";font-size:23px;margin:12px 0}
+.levelText{font-size:21px;line-height:1.35}
+.levelText b{color:#874654}
+.levelRabbit{width:180px;height:125px;object-fit:contain;image-rendering:pixelated;display:block;margin:4px auto}
+.levelBow{position:absolute;top:-31px;left:50%;transform:translateX(-50%);width:68px;image-rendering:pixelated}
+
+/* GAME OVER */
+#gameOverScreen{background:rgba(26,17,18,.48)}
+.overCard{width:min(430px,86vw);padding:22px 26px;text-align:center}
+.overCard h1{font-family:"Press Start 2P";font-size:27px;text-shadow:3px 3px #d6a36f;margin:7px 0 13px}
+.overText{font-size:18px;line-height:1.4;color:#63453e}
+.overRabbit{width:170px;height:115px;object-fit:contain;image-rendering:pixelated;display:block;margin:2px auto -5px}
+.alertIcon{width:58px;height:55px;object-fit:contain;image-rendering:pixelated;display:block;margin:-3px auto 2px}
+.scoreBox{margin:10px auto;padding:9px;border:3px solid #8a5b48;background:#f6dfbd;font-family:"Press Start 2P";font-size:9px;line-height:1.8}
+
+/* hidden during play */
+.playing #startScreen,.playing #howScreen,.playing #gameOverScreen{display:none!important}
+
 @media(max-width:700px){
-  #tapButton{width:124px!important;height:124px!important;font-size:14px!important}
-  .rabbit{width:auto!important;height:92px!important;max-width:140px!important}
+  #startScreen{padding-left:0;justify-content:center}
+  .menuCard{width:min(330px,88vw);padding:18px}
+  .menuCard h1{font-size:24px}
+  .tagline{font-size:16px}.menuRabbit{width:125px;height:100px}
+  #hud{top:8px;width:96vw;padding:5px}
+  .label{font-size:6px}.value{font-size:9px}#hearts{font-size:14px}
+  #soundToggle{top:73px;right:8px;font-size:7px;padding:7px}
+  #hint{top:116px;font-size:5.5px}
+  #tapButton{width:116px;height:116px;font-size:13px}
+  .rabbit{width:112px;max-height:92px}
+  .trap{width:62px;height:62px;font-size:19px}
+  .levelText{font-size:18px}.levelNum{font-size:19px}.levelUp{font-size:13px}
 }
 </style>
-
 </head>
 <body>
 <div id="game">
+  <img id="plant" class="decor" src="assets/happy.png?v=9" alt="">
+  <img id="bow" class="decor" src="assets/bow.png?v=9" alt="">
+  <img id="badge" class="decor" src="assets/badge.png?v=9" alt="">
 
-  <div class="floorGlow"></div>
-  <div class="windowGlow"></div>
-  <img id="plantDecor" class="pixelDecor" src="assets/happy.png?v=4" alt="">
-  <img id="bowDecor" class="pixelDecor" src="assets/bow.png?v=4" alt="">
-  <img id="badgeDecor" class="pixelDecor" src="assets/badge.png?v=4" alt="">
-
-  <div class="vine one"></div><div class="vine two"></div>
-
-  <div class="hud">
-    <div class="stat"><div class="label">SCORE</div><div class="value" id="score">0</div></div>
-    <div class="stat"><div class="label">HEARTS</div><div id="hearts" aria-label="3 lives">♥ ♥ ♥</div></div>
-    <div class="stat"><div class="label">TIMER</div><div class="value" id="timer">3.0</div></div>
-    <div class="stat"><div class="label">LEVEL</div><div class="value" id="level">1</div></div>
+  <div id="hud">
+    <div class="stat"><div class="label">SCORE</div><div id="score" class="value">0</div></div>
+    <div class="stat"><div class="label">HEARTS</div><div id="hearts">♥ ♥ ♥</div></div>
+    <div class="stat"><div class="label">TIMER</div><div id="timer" class="value">3.0</div></div>
+    <div class="stat"><div class="label">LEVEL</div><div id="level" class="value">1</div></div>
   </div>
 
-  <button id="soundToggle">♫ ON</button>
+  <button id="soundToggle">♫ OFF</button>
   <div id="hint">TAP THE PINK BUTTON · DON'T TAP THE RABBITS OR X</div>
+  <button id="tapButton">TAP</button>
   <div id="combo">COMBO x0</div>
   <div id="levelFlash"></div>
-  <button id="tapButton">TAP</button>
 
-  <div id="startScreen"><div class="card">
-    <h1>DON'T<br>TAP</h1>
-    <div class="sub">How long can you resist?<br>Tap pink. Never tap the rabbits.</div>
-    <button class="btn" id="startButton">PLAY</button>
-    <button class="btn secondary" id="howButton">HOW TO PLAY</button>
-    <div class="sub" style="margin:17px 0 0">BEST SCORE · <span id="menuBest">0</span></div>
-  </div></div>
-
-  <div id="howScreen" class="hidden"><div class="card">
-    <h1>HOW TO PLAY</h1>
-    <div class="sub">Tap the pink button.<br>Never tap a rabbit.<br>Never tap an X trap.<br>Keep your combo alive.</div>
-    <button class="btn secondary" id="backButton">BACK</button>
-  </div></div>
-
-  <div id="levelModal" class="hidden"><div class="card">
-    <div id="levelTitle">✦ LEVEL UP ✦</div>
-    <div id="levelName">LEVEL 2</div>
-    <div id="levelText">Lovely!<br>Keep going!</div>
-    <img id="modalRabbit" src="assets/run_3.png?v=2" alt="">
-    <div class="sub" style="margin:8px 0 0;font-size:14px">TAP TO CONTINUE</div>
-  </div></div>
-
-  <div id="gameOverScreen" class="hidden"><div class="card">
-    <h1>GAME OVER</h1>
-    <div class="sub">You tapped something you shouldn't have...<br><br>
-      <b>SCORE · <span id="finalScore">0</span></b><br>
-      <b>BEST · <span id="bestScore">0</span></b>
+  <!-- START -->
+  <section id="startScreen">
+    <div class="parchment menuCard">
+      <h1>DON'T<br>TAP</h1>
+      <div class="tagline">How long can you resist?</div>
+      <img class="menuRabbit" src="assets/idle_crouch.png?v=9" alt="pixel rabbit">
+      <div class="cushion"></div>
+      <button class="btn" id="startButton">PLAY</button><br>
+      <button class="btn secondary" id="howButton">HOW TO PLAY</button>
+      <div class="bestBox">BEST SCORE<br><span id="menuBest">0</span></div>
     </div>
-    <button class="btn" id="playAgainButton">TRY AGAIN</button>
-    <button class="btn secondary" id="menuButton">BACK TO MENU</button>
-  </div></div>
+  </section>
+
+  <!-- HOW TO PLAY -->
+  <section id="howScreen" style="display:none">
+    <div class="parchment menuCard">
+      <h1>HOW TO<br>PLAY</h1>
+      <div class="howText">
+        TAP THE PINK BUTTON.<br>
+        DON'T TAP THE RABBITS.<br>
+        DON'T TAP THE X.<br><br>
+        RUNNING RABBITS ARE TRAPS.<br>
+        KEEP YOUR HEARTS ALIVE.
+      </div>
+      <button class="btn secondary" id="backButton">BACK</button>
+    </div>
+  </section>
+
+  <!-- LEVEL UP -->
+  <section id="levelModal" style="display:none">
+    <div class="parchment levelCard">
+      <img class="levelBow" src="assets/bow.png?v=9" alt="">
+      <div class="levelUp">✦ LEVEL UP! ✦</div>
+      <div id="levelName" class="levelNum">LEVEL 2</div>
+      <div id="levelText" class="levelText"><b>Lovely!</b><br>Keep going!</div>
+      <img id="levelRabbit" class="levelRabbit" src="assets/happy.png?v=9" alt="">
+      <div style="font-family:'Press Start 2P';font-size:7px;color:#765047">TAP TO CONTINUE</div>
+    </div>
+  </section>
+
+  <!-- GAME OVER -->
+  <section id="gameOverScreen" style="display:none">
+    <div class="parchment overCard">
+      <img class="alertIcon" src="assets/alert.png?v=9" alt="">
+      <h1>GAME OVER</h1>
+      <div id="overReason" class="overText">You tapped the trap...</div>
+      <img id="overRabbit" class="overRabbit" src="assets/idle_sleep.png?v=9" alt="">
+      <div class="scoreBox">SCORE · <span id="finalScore">0</span><br>BEST · <span id="bestScore">0</span></div>
+      <button class="btn" id="playAgainButton">TRY AGAIN</button>
+      <button class="btn secondary" id="menuButton">BACK TO MENU</button>
+    </div>
+  </section>
+
+  <audio id="music" src="assets/cozy_music.wav?v=9" loop preload="auto" playsinline></audio>
+  <audio id="sndTap" src="assets/tap.wav?v=9" preload="auto"></audio>
+  <audio id="sndTrap" src="assets/trap.wav?v=9" preload="auto"></audio>
+  <audio id="sndLevel" src="assets/level_up.wav?v=9" preload="auto"></audio>
+  <audio id="sndOver" src="assets/game_over.wav?v=9" preload="auto"></audio>
 </div>
 
 <script>
 const A='assets/';
-const runFrames=['run_1.png','run_2.png','run_3.png','run_4.png','run_5.png'];
+const runFrames=['run_1.png','run_2.png','run_3.png','run_4.png']; // run_5 is cropped; intentionally not used.
 const levelCopy={
-  2:['Lovely!','Keep going!'],3:['Nice!','You found your rhythm!'],4:['Great!','You’re doing amazing!'],
-  5:['Awesome!','Stay sharp!'],6:['Wonderful!','You’re getting good!'],7:['Brilliant!','Don’t blink!'],
-  8:['Impressive!','Don’t get comfy!'],9:['Incredible!','You’re still here!'],10:['Legendary!','You’re on fire!']
+  2:['Lovely!','Keep going!'],3:['Nice!','You found your rhythm!'],
+  4:['Great!','You’re doing amazing!'],5:['Awesome!','Stay sharp!'],
+  6:['Wonderful!','You’re getting good!'],7:['Brilliant!','Don’t blink!'],
+  8:['Impressive!','Don’t get comfy!'],9:['Incredible!','You’re still here!'],
+  10:['Legendary!','You’re on fire!']
 };
-let score=0,combo=0,level=1,timeLeft=3,hearts=3,gameRunning=false,timerId=null,rabbitTimer=null;
-let traps=[],rabbits=[],audioCtx=null,musicOn=true,musicTimer=null;
 
-const $=id=>document.getElementById(id);
-const tap=$('tapButton');
+let score=0,level=1,combo=0,hearts=3,timeLeft=3,gameRunning=false;
+let timerId=null,rabbitLoop=null,rabbits=[],traps=[],musicOn=false;
+const $=id=>document.getElementById(id), tap=$('tapButton');
 
 function best(){return Number(localStorage.getItem('dontTapBest')||0)}
 function updateHud(){
   $('score').textContent=score;
   $('level').textContent=level;
   $('timer').textContent=Math.max(0,timeLeft).toFixed(1);
-  $('hearts').textContent='♥ '.repeat(hearts)+'♡ '.repeat(3-hearts);
-  $('hearts').setAttribute('aria-label',hearts+' lives remaining');
+  $('hearts').innerHTML=['♥','♥','♥'].map((h,i)=>i<hearts?'♥':'♡').join(' ');
   $('combo').textContent='COMBO x'+combo;
-  $('combo').style.opacity=combo>=2?1:0;
+  $('combo').style.opacity=combo>=2?'1':'0';
   $('menuBest').textContent=best();
 }
+function setPlaying(on){document.body.classList.toggle('playing',on)}
 function moveTap(){
-  const margin = level<=2 ? Math.min(150,innerWidth*.22) : Math.min(105,innerWidth*.15);
-  const minY = level<=2 ? 245 : 205;
-  const maxY = Math.max(minY+90,innerHeight-150);
-  const x=margin+Math.random()*(innerWidth-margin*2);
-  const y=minY+Math.random()*(maxY-minY);
-
-  /* Don't place TAP where a fresh rabbit usually runs. */
-  tap.style.left=x+'px';
-  tap.style.top=y+'px';
+  const m=level<=2?Math.min(150,innerWidth*.20):Math.min(110,innerWidth*.14);
+  const yMin=level<=2?250:210,yMax=Math.max(yMin+80,innerHeight-145);
+  tap.style.left=(m+Math.random()*(innerWidth-m*2))+'px';
+  tap.style.top=(yMin+Math.random()*(yMax-yMin))+'px';
 }
 function clearThings(){
-  traps.forEach(t=>t.remove());traps=[];
-  rabbits.forEach(r=>r.el.remove());rabbits=[];
-  clearTimeout(rabbitTimer);
+  traps.forEach(x=>x.remove());traps=[];
+  rabbits.forEach(x=>{x.el.remove();x.shadow.remove();if(x.alert)x.alert.remove()});rabbits=[];
+  clearTimeout(rabbitLoop);
+}
+function resetAudio(){
+  const ids=['music','sndTap','sndTrap','sndLevel','sndOver'];
+  ids.forEach(id=>{const a=$(id);a.pause();a.currentTime=0});
+}
+async function unlockMusic(){
+  const m=$('music');
+  if(!musicOn)return;
+  try{m.muted=false;await m.play()}catch(e){
+    // iOS may reject until a fresh direct user gesture; the next tap/touch retries.
+  }
+}
+function playSound(id){
+  if(!musicOn)return;
+  const a=$(id);a.currentTime=0;a.play().catch(()=>{});
 }
 function startGame(){
-  initAudio();
-  if(audioCtx && audioCtx.state==='suspended') audioCtx.resume();
-  score=0;combo=0;level=1;timeLeft=3;hearts=3;gameRunning=true;
-  clearThings();
-  $('startScreen').classList.add('hidden');$('howScreen').classList.add('hidden');
-  $('gameOverScreen').classList.add('hidden');$('levelModal').classList.add('hidden');
-  $('hint').textContent="TAP THE PINK BUTTON · DON'T TAP THE RABBITS OR X";
+  musicOn=true;$('soundToggle').textContent='♫ ON';
+  unlockMusic();
+  score=0;level=1;combo=0;hearts=3;timeLeft=3;gameRunning=true;
+  clearThings();resetAudio();unlockMusic();
+  setPlaying(true);
+  $('startScreen').style.display='none';$('gameOverScreen').style.display='none';$('howScreen').style.display='none';
   tap.style.display='block';moveTap();updateHud();
   clearInterval(timerId);timerId=setInterval(tick,100);
 }
-
 function tick(){
   if(!gameRunning)return;
-  timeLeft-=.1;
+  timeLeft=Math.max(0,timeLeft-.1);
   if(timeLeft<=0){
-    loseHeart();
+    hearts--;
+    combo=0;
+    playSound('sndOver');
+    if(hearts<=0){endGame('timeout');return}
+    timeLeft=timeForLevel(level);
+    showHeartLoss();
   }
   updateHud();
 }
-
-function loseHeart(){
-  hearts=Math.max(0,hearts-1);
-  combo=0;
-  playHeartLost();
-  if(hearts<=0){
-    endGame('timeout');
-    return;
-  }
-  timeLeft=timeForLevel(level)+.35;
-  moveTap();
-  updateHud();
-}
-
 function timeForLevel(l){
-  if(l<=2)return 3.0;
+  if(l<=2)return 3;
   if(l===3)return 2.8;
   if(l===4)return 2.55;
   if(l===5)return 2.3;
-  return Math.max(1.45,2.3-(l-5)*.14);
+  return Math.max(1.5,2.3-(l-5)*.13);
 }
-
 function correctTap(){
   if(!gameRunning)return;
   score++;combo++;
-  const old=level;
-  level=Math.floor(score/10)+1;
-
-  const bonus=combo>=3 ? .35 : 0;
-  timeLeft=timeForLevel(level)+bonus;
-
-  playTap();
-
-  /* Level 1: stable button. Level 2: slower movement.
-     From Level 6 onward the button moves more aggressively. */
+  const old=level;level=Math.floor(score/10)+1;
+  timeLeft=timeForLevel(level)+(combo>=3?.35:0);
+  playSound('sndTap');
   moveTap();
-
-  if(level!==old){
-    clearThings();
-    showLevel(level);
-  }else{
-    createTrapWave();
-  }
-
+  if(level!==old){clearThings();showLevel(level)}
+  else createTrapWave();
   updateHud();
 }
-
 function createTrapWave(){
-  /* No traps before Level 3. */
   if(level<3)return;
-
-  let amount=0;
-  if(level===3) amount=(Math.random()<.35?1:0);
-  else if(level<=5) amount=(Math.random()<.60?1:0);
-  else amount=(Math.random()<.65?2:1);
-
-  for(let i=0;i<amount;i++)createTrap();
+  let n=level===3?(Math.random()<.35?1:0):level<=5?(Math.random()<.6?1:0):(Math.random()<.7?2:1);
+  for(let i=0;i<n;i++)createTrap();
 }
-
 function createTrap(){
-  const t=document.createElement('button');
-  t.className='trap';
-  t.textContent='×';
-
-  let x,y,tries=0;
-  const bx=parseFloat(tap.style.left)||innerWidth/2;
-  const by=parseFloat(tap.style.top)||innerHeight/2;
-
-  do{
-    x=85+Math.random()*(innerWidth-170);
-    y=230+Math.random()*Math.max(80,innerHeight-310);
-    tries++;
-  }while(
-    (Math.hypot(x-bx,y-by)<230 ||
-     Math.hypot(x-innerWidth*.5,y-140)<170) && tries<100
-  );
-
-  t.style.left=x+'px';
-  t.style.top=y+'px';
-
-  t.onclick=e=>{
-    e.stopPropagation();
-    if(gameRunning){playTrap();endGame('trap')}
-  };
-
-  $('game').appendChild(t);
-  traps.push(t);
+  const t=document.createElement('button');t.className='trap';t.textContent='×';
+  let x,y,tries=0,bx=parseFloat(tap.style.left)||innerWidth/2,by=parseFloat(tap.style.top)||innerHeight/2;
+  do{x=90+Math.random()*(innerWidth-180);y=240+Math.random()*Math.max(80,innerHeight-330);tries++}
+  while(Math.hypot(x-bx,y-by)<230&&tries<100);
+  t.style.left=x+'px';t.style.top=y+'px';
+  t.onclick=e=>{e.stopPropagation();if(gameRunning)endGame('trap')};
+  $('game').appendChild(t);traps.push(t);
 }
-
 function startRabbitWave(){
-  clearTimeout(rabbitTimer);
-  if(!gameRunning || level<2)return;
-
-  /* Level 2 gets exactly one rabbit after a 1.5s safe grace period.
-     Later levels get more rabbits and shorter gaps. */
-  const count =
-    level===2 ? 1 :
-    level===3 ? (Math.random()<.5?1:2) :
-    level<=5 ? 2 :
-    Math.min(4,2+Math.floor((level-5)/2));
-
-  const grace=level===2 ? 1500 : 650;
-
-  for(let i=0;i<count;i++){
-    setTimeout(()=>{
-      if(gameRunning)spawnRabbit(i);
-    },grace+i*550);
-  }
-
-  const gap=Math.max(1900,4700-level*220);
-  rabbitTimer=setTimeout(()=>{
-    if(gameRunning)startRabbitWave();
-  },gap);
+  clearTimeout(rabbitLoop);
+  if(!gameRunning||level<2)return;
+  const count=level===2?1:level===3?(Math.random()<.5?1:2):level<=5?2:Math.min(4,2+Math.floor((level-5)/2));
+  const grace=level===2?1500:550;
+  for(let i=0;i<count;i++)setTimeout(()=>{if(gameRunning)spawnRabbit(i)},grace+i*480);
+  rabbitLoop=setTimeout(()=>{if(gameRunning)startRabbitWave()},Math.max(2100,4700-level*230));
 }
-
 function spawnRabbit(i){
   const el=document.createElement('img');
-  el.className='rabbit';
-  el.src=A+runFrames[(score+i)%runFrames.length];
-  el.alt='rabbit';
-  el.draggable=false;
-
-  /* Rabbits stay on the floor instead of appearing in the middle of the wall. */
-  const floorTop=66+Math.random()*20;
+  el.className='rabbit';el.draggable=false;
   const fromRight=(level>=4 && (i+level)%2===0);
-
-  const startX=fromRight ? 98 : 2;
-  const endX=fromRight ? 2 : 98;
-
-  el.style.top=floorTop+'vh';
-  el.style.left=startX+'vw';
+  const y=70+Math.random()*16;
+  const start=fromRight?104:-10,end=fromRight?-12:104;
+  el.style.top=y+'vh';el.style.left=start+'vw';el.src=A+runFrames[(score+i)%runFrames.length];
   $('game').appendChild(el);
 
-  /* A separate floor shadow sells the jump. */
-  const shadow=document.createElement('div');
-  shadow.className='rabbitGroundShadow';
-  shadow.style.left=(startX)+'vw';
-  shadow.style.top=(floorTop+10)+'vh';
-  $('game').appendChild(shadow);
+  const shadow=document.createElement('div');shadow.className='rabbitShadow';
+  shadow.style.top=(y+11)+'vh';shadow.style.left=start+'vw';$('game').appendChild(shadow);
 
-  const duration=Math.max(2500,5000-level*210);
-  const start=performance.now();
-  const phase=(i%3)*.18;
-  const r={el,shadow};
-  rabbits.push(r);
+  const alert=document.createElement('img');alert.className='rabbitAlert';alert.src=A+'alert.png?v=9';
+  alert.style.top=(y-8)+'vh';alert.style.left=(start+(fromRight?-2:7))+'vw';alert.style.display='none';$('game').appendChild(alert);
 
-  el.onclick=e=>{
-    e.stopPropagation();
-    if(!gameRunning)return;
-    playRabbitHit();
-    endGame('rabbit');
-  };
+  const r={el,shadow,alert};rabbits.push(r);
+  let hitShown=false;
+  el.onclick=e=>{e.stopPropagation();if(gameRunning)endGame('rabbit')};
 
+  const startT=performance.now(),duration=Math.max(2800,5200-level*210),phase=i*.5;
   function anim(now){
-    if(!gameRunning){
-      el.remove();shadow.remove();
-      return;
-    }
-
-    const p=Math.min(1,(now-start)/duration);
-
-    /* Direction:
-       fromRight = rabbit runs LEFT and is flipped horizontally.
-       otherwise it runs RIGHT and keeps the source orientation. */
-    const x=startX+(endX-startX)*p;
-
-    /* Three jump arcs during one crossing. */
-    const jumpWave=(Math.sin((p*3*Math.PI*2)+phase)+1)/2;
-    const jumpHeight=(level<4?28:34)+Math.min(22,level*2);
-    const jump=jumpWave*jumpHeight;
-
-    const air=Math.min(1,jump/jumpHeight);
-    const squash=air<.10 ? 1.03 : (air>.86 ? .94 : 1);
-    const stretch=air<.10 ? .97 : (air>.86 ? 1.07 : 1);
-
-    const frame=Math.min(4,Math.floor((p*5+i)%5));
+    if(!gameRunning){el.remove();shadow.remove();alert.remove();return}
+    const p=Math.min(1,(now-startT)/duration);
+    const x=start+(end-start)*p;
+    const jump=(Math.sin(p*Math.PI*6+phase)+1)/2*(28+Math.min(26,level*2));
+    const air=jump/(54+Math.min(26,level*2));
+    const frame=Math.floor((p*8+i)%runFrames.length);
     el.src=A+runFrames[frame];
-
-    const dir=fromRight ? -1 : 1;
+    const dir=fromRight?-1:1;
     el.style.left=x+'vw';
-    el.style.transform=
-      `translateY(${-jump}px) scaleX(${dir}) scale(${stretch},${squash})`;
-
-    /* Shadow compresses and fades when the rabbit is high. */
-    shadow.style.left=x+'vw';
-    shadow.style.transform=`translateX(-50%) scale(${1-air*.45},${.65+air*.2})`;
-    shadow.style.opacity=String(.22+.35*(1-air));
-
-    if(p<1)requestAnimationFrame(anim);
-    else{
-      el.remove();shadow.remove();
-      rabbits=rabbits.filter(q=>q.el!==el);
-    }
+    el.style.transform=`translateY(${-jump}px) scaleX(${dir})`;
+    shadow.style.left=x+'vw';shadow.style.transform=`translateX(-50%) scale(${1-air*.5},${.7+air*.15})`;shadow.style.opacity=.28-.12*air;
+    if(!hitShown && p>.42 && p<.62 && level>=5){alert.style.display='block';alert.style.left=(x+(fromRight?1:6))+'vw';alert.style.top=(y-9)+'vh';hitShown=true}
+    if(p<1)requestAnimationFrame(anim);else{el.remove();shadow.remove();alert.remove();rabbits=rabbits.filter(q=>q.el!==el)}
   }
-
   requestAnimationFrame(anim);
 }
-
 function showLevel(l){
   const c=levelCopy[l]||['Level '+l+'!','Keep going!'];
   $('levelName').textContent='LEVEL '+l;
   $('levelText').innerHTML='<b>'+c[0]+'</b><br>'+c[1];
-  $('modalRabbit').src=A+runFrames[(l+1)%runFrames.length];
-
-  $('levelModal').classList.remove('hidden');
-
-  const flash=$('levelFlash');
-  flash.classList.remove('flash');
-  void flash.offsetWidth;
-  flash.classList.add('flash');
-
-  playLevel();
-
-  /* Close after a short readable moment. */
-  setTimeout(()=>{
-    $('levelModal').classList.add('hidden');
-  },1000);
-
-  /* Level 2 starts after 1.5s of safe play.
-     Later levels start after a shorter grace period. */
-  if(l>=2){
-    clearThings();
-    const delay=(l===2)?1500:700;
-    setTimeout(()=>{
-      if(gameRunning)startRabbitWave();
-    },delay);
-  }
+  $('levelRabbit').src=(l%2)?A+'happy.png?v=9':A+'idle_front.png?v=9';
+  $('levelModal').style.display='flex';
+  playSound('sndLevel');
+  const flash=document.createElement('div');flash.style.cssText='position:absolute;inset:0;background:radial-gradient(circle,#fff5df,transparent 58%);z-index:59;animation:levelFlash .6s steps(4) forwards;pointer-events:none';$('game').appendChild(flash);
+  setTimeout(()=>flash.remove(),650);
+  setTimeout(()=>{$('levelModal').style.display='none';if(gameRunning)startRabbitWave()},1100);
 }
-
+function showHeartLoss(){
+  $('hearts').animate([{transform:'scale(1)'},{transform:'scale(1.25)'},{transform:'scale(1)'}],{duration:350});
+}
 function endGame(reason){
   if(!gameRunning)return;
-  gameRunning=false;
-  clearInterval(timerId);
-  clearThings();
-  tap.style.display='none';
-
-  if(reason==='rabbit')$('hint').textContent='THE RABBIT GOT YOU · TRY AGAIN';
-  else if(reason==='trap')$('hint').textContent='YOU TAPPED THE TRAP · TRY AGAIN';
-  else $('hint').textContent='TOO SLOW · TRY AGAIN';
-
-  playGameOver();
-
+  gameRunning=false;clearInterval(timerId);clearThings();tap.style.display='none';
+  playSound(reason==='trap'||reason==='rabbit'?'sndOver':'sndOver');
+  $('overReason').textContent=reason==='rabbit'?'You tapped the rabbit...':reason==='trap'?'You tapped the trap...':'Your hearts ran out...';
+  $('overRabbit').src=reason==='rabbit'?A+'head_angry.png?v=9':A+'idle_sleep.png?v=9';
   if(score>best())localStorage.setItem('dontTapBest',score);
-
-  $('finalScore').textContent=score;
-  $('bestScore').textContent=best();
-  $('gameOverScreen').classList.remove('hidden');
-  updateHud();
+  $('finalScore').textContent=score;$('bestScore').textContent=best();
+  $('gameOverScreen').style.display='flex';setPlaying(false);updateHud();
 }
-function initAudio(){
-  if(!audioCtx){
-    audioCtx=new (window.AudioContext||window.webkitAudioContext)();
-  }
-  if(audioCtx.state==='suspended') audioCtx.resume();
-  if(musicOn) startMusic();
-}
-function tone(freq,dur,type='sine',gain=.035,delay=0){
-  if(!audioCtx)return;
-  const o=audioCtx.createOscillator(),g=audioCtx.createGain();
-  o.type=type;o.frequency.value=freq;g.gain.setValueAtTime(0,audioCtx.currentTime+delay);
-  g.gain.linearRampToValueAtTime(gain,audioCtx.currentTime+delay+.02);
-  g.gain.exponentialRampToValueAtTime(.001,audioCtx.currentTime+delay+dur);
-  o.connect(g).connect(audioCtx.destination);o.start(audioCtx.currentTime+delay);o.stop(audioCtx.currentTime+delay+dur+.03);
-}
-function playTap(){tone(660,.08,'triangle',.045);tone(880,.07,'sine',.025,.04)}
-function playTrap(){tone(120,.28,'sawtooth',.06);tone(75,.35,'square',.04,.04)}
-function playRabbitHit(){tone(180,.15,'square',.05);tone(110,.22,'sawtooth',.04,.05)}
-function playLevel(){tone(523,.12,'triangle',.04);tone(659,.12,'triangle',.04,.12);tone(784,.2,'triangle',.05,.24)}
-function playHeartLost(){tone(330,.08,'triangle',.035);tone(220,.16,'sine',.025,.07)}
-function playGameOver(){tone(220,.2,'sawtooth',.05);tone(165,.3,'sawtooth',.04,.12)}
-function startMusic(){
-  if(!audioCtx || !musicOn) return;
-  if(musicTimer) return;
-  const notes=[261.63,329.63,392,329.63,293.66,349.23,440,349.23];
-  let i=0;
-  musicTimer=setInterval(()=>{
-    if(musicOn && audioCtx && audioCtx.state==='running'){
-      tone(notes[i++%notes.length],.32,'sine',.010);
-      if(level>=5) tone(notes[(i+2)%notes.length]/2,.22,'triangle',.004,.03);
-    }
-  },480);
-}
-function stopMusic(){
-  if(musicTimer){clearInterval(musicTimer);musicTimer=null;}
-}
-$('soundToggle').onclick=()=>{
-  if(!audioCtx) initAudio();
-  musicOn=!musicOn;
-  $('soundToggle').textContent=musicOn?'♫ ON':'♫ OFF';
-  if(musicOn){
-    if(audioCtx && audioCtx.state==='suspended') audioCtx.resume().catch(()=>{});
-    startMusic();
-  }else{
-    stopMusic();
-    if(audioCtx) audioCtx.suspend().catch(()=>{});
-  }
+$('tapButton').onclick=e=>{e.stopPropagation();correctTap()};
+$('startButton').onclick=()=>{resetAudio();startGame()};
+$('playAgainButton').onclick=()=>{resetAudio();startGame()};
+$('howButton').onclick=()=>{$('startScreen').style.display='none';$('howScreen').style.display='flex'};
+$('backButton').onclick=()=>{$('howScreen').style.display='none';$('startScreen').style.display='flex'};
+$('menuButton').onclick=()=>{$('gameOverScreen').style.display='none';$('startScreen').style.display='flex';$('soundToggle').textContent='♫ OFF';musicOn=false;resetAudio()};
+$('soundToggle').onclick=async()=>{
+  musicOn=!musicOn;$('soundToggle').textContent=musicOn?'♫ ON':'♫ OFF';
+  if(musicOn)await unlockMusic();else resetAudio();
 };
-tap.onclick=e=>{e.stopPropagation();correctTap()};
-$('startButton').onclick=startGame;
-$('playAgainButton').onclick=startGame;
-$('howButton').onclick=()=>{$('howScreen').classList.remove('hidden')};
-$('backButton').onclick=()=>{$('howScreen').classList.add('hidden')};
-$('menuButton').onclick=()=>{$('gameOverScreen').classList.add('hidden');$('startScreen').classList.remove('hidden');$('hint').textContent="TAP THE PINK BUTTON · DON'T TAP THE RABBITS OR X";updateHud()};
+
+/* Retry audio after any direct user gesture on mobile Safari. */
+['pointerdown','touchend','click'].forEach(ev=>{
+  document.addEventListener(ev,()=>{if(gameRunning&&musicOn)unlockMusic()},{passive:true});
+});
+document.addEventListener('visibilitychange',()=>{if(!document.hidden&&gameRunning&&musicOn)unlockMusic()});
+
 updateHud();
 </script>
-
-<script>
-window.addEventListener('load',()=>{
-  ['cozy_room_background.png','run_1.png','run_2.png','run_3.png','run_4.png','run_5.png'].forEach(n=>{
-    const img=new Image();
-    img.onerror=()=>console.warn('DON\'T TAP asset missing:', 'assets/'+n);
-    img.src='assets/'+n+'?v=2';
-  });
-});
-</script>
-
-
-<script>
-document.addEventListener('visibilitychange',()=>{
-  if(!document.hidden && audioCtx && musicOn){
-    audioCtx.resume().catch(()=>{});
-    startMusic();
-  }
-});
-['pointerdown','touchstart','keydown'].forEach(ev=>{
-  document.addEventListener(ev,()=>{
-    if(audioCtx && audioCtx.state==='suspended') audioCtx.resume().catch(()=>{});
-  },{passive:true});
-});
-</script>
-
+<style>
+@keyframes levelFlash{0%{opacity:0}15%{opacity:1}100%{opacity:0}}
+</style>
 </body>
 </html>
