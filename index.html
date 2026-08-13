@@ -14,6 +14,8 @@
 
 <style>
 
+@import url('https://fonts.googleapis.com/css2?family=Quicksand:wght@500;600;700&family=DM+Serif+Display&display=swap');
+
 * {
   box-sizing: border-box;
 }
@@ -28,11 +30,17 @@ body {
 
 body {
 
-  background: #fff4f8;
+  background:
+    radial-gradient(circle at 12% 18%, rgba(255,255,255,0.85) 0 2px, transparent 3px),
+    radial-gradient(circle at 86% 28%, rgba(255,255,255,0.7) 0 2px, transparent 3px),
+    linear-gradient(135deg, #fff9f5 0%, #f8eee8 52%, #f3e5e1 100%);
 
-  color: #4a3440;
+  background-size: 170px 170px, 230px 230px, 100% 100%;
+
+  color: #5b4750;
 
   font-family:
+    'Quicksand',
     Arial,
     Helvetica,
     sans-serif;
@@ -166,6 +174,58 @@ body {
 
 
 /* =========================
+   COZY ATMOSPHERE
+========================= */
+
+#game::before,
+#game::after {
+  content: "";
+  position: absolute;
+  pointer-events: none;
+  z-index: 0;
+}
+
+#game::before {
+  inset: 0;
+  background:
+    radial-gradient(circle at 12% 82%, rgba(218,188,169,0.20), transparent 24%),
+    radial-gradient(circle at 88% 80%, rgba(205,171,180,0.18), transparent 25%);
+}
+
+#game::after {
+  width: 150px;
+  height: 150px;
+  right: -35px;
+  bottom: -40px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.32);
+  box-shadow:
+    -120px 35px 0 -45px rgba(255,255,255,0.28),
+    -210px -15px 0 -65px rgba(255,255,255,0.24);
+}
+
+#musicToggle {
+  position: absolute;
+  top: 18px;
+  right: 18px;
+  z-index: 30;
+  border: 1px solid rgba(122,91,99,0.18);
+  background: rgba(255,250,247,0.78);
+  color: #765861;
+  border-radius: 999px;
+  padding: 8px 12px;
+  font: 700 11px 'Quicksand', sans-serif;
+  letter-spacing: 0.5px;
+  cursor: pointer;
+  backdrop-filter: blur(8px);
+  box-shadow: 0 5px 18px rgba(100,70,70,0.08);
+}
+
+#musicToggle.off {
+  opacity: 0.55;
+}
+
+/* =========================
    TAP BUTTON
 ========================= */
 
@@ -261,21 +321,15 @@ body {
    RABBITS
 ========================= */
 
-.rabbit {
+ .rabbit {
 
   position: absolute;
 
-  width: 60px;
+  width: 76px;
 
-  height: 60px;
+  height: 76px;
 
-  display: flex;
-
-  align-items: center;
-
-  justify-content: center;
-
-  font-size: 48px;
+  object-fit: contain;
 
   z-index: 2;
 
@@ -283,8 +337,8 @@ body {
 
   filter:
     drop-shadow(
-      0 6px 8px
-      rgba(184,92,122,0.16)
+      0 7px 10px
+      rgba(104,76,76,0.18)
     );
 
 }
@@ -355,6 +409,16 @@ body {
    LEVEL MESSAGE
 ========================= */
 
+#levelMessage small {
+  display: inline-block;
+  margin-top: 8px;
+  font-family: 'Quicksand', sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: 0.2px;
+  color: #9a7b87;
+}
+
 #levelMessage {
 
   position: absolute;
@@ -365,11 +429,15 @@ body {
 
   text-align: center;
 
+  font-family: 'DM Serif Display', Georgia, serif;
+
   font-size: 34px;
 
-  font-weight: bold;
+  font-weight: 400;
 
-  color: #b85c7a;
+  color: #8f6871;
+
+  text-shadow: 0 2px 12px rgba(255,255,255,0.75);
 
   opacity: 0;
 
@@ -468,9 +536,17 @@ h1 {
 
   margin: 0 0 12px;
 
-  font-size: 48px;
+  font-family: 'DM Serif Display', Georgia, serif;
 
-  letter-spacing: 3px;
+  font-size: 50px;
+
+  font-weight: 400;
+
+  letter-spacing: 2px;
+
+  color: #76545e;
+
+  text-shadow: 0 2px 0 rgba(255,255,255,0.6);
 
 }
 
@@ -533,6 +609,42 @@ h1 {
 
 }
 
+@media (max-width: 600px) {
+
+  #score {
+    top: 18px;
+    font-size: 22px;
+  }
+
+  #timer { top: 49px; }
+  #level { top: 72px; }
+  #combo { top: 96px; }
+  #warning { top: 122px; }
+
+  #musicToggle {
+    top: 14px;
+    right: 10px;
+    padding: 7px 10px;
+    font-size: 10px;
+  }
+
+  #levelMessage {
+    top: 40%;
+    padding: 0 20px;
+    font-size: 30px;
+  }
+
+  .rabbit {
+    width: 64px;
+    height: 64px;
+  }
+
+  h1 {
+    font-size: 42px;
+  }
+
+}
+
 </style>
 
 </head>
@@ -541,7 +653,7 @@ h1 {
 <body>
 
 
-<div id="game">
+<div id="game">\n\n  <button id="musicToggle" type="button" aria-label="Toggle music">♪ MUSIC ON</button>
 
 
   <div id="score">
@@ -671,6 +783,9 @@ let rabbits = [];
 ========================= */
 
 let audioContext = null;
+let musicEnabled = true;
+let musicTimer = null;
+let musicStep = 0;
 
 
 function initAudio() {
@@ -749,6 +864,100 @@ function sound(
 
 }
 
+
+/* COZY BACKGROUND MUSIC */
+
+const cozyMelody = [
+  261.63, 329.63, 392.00, 329.63,
+  293.66, 349.23, 440.00, 349.23,
+  261.63, 329.63, 392.00, 523.25,
+  392.00, 349.23, 293.66, 261.63
+];
+
+function playMusicNote() {
+
+  if (!musicEnabled || !audioContext || !gameRunning)
+    return;
+
+  const osc = audioContext.createOscillator();
+  const gain = audioContext.createGain();
+
+  osc.type = "sine";
+  osc.frequency.value =
+    cozyMelody[musicStep % cozyMelody.length];
+
+  const now = audioContext.currentTime;
+
+  gain.gain.setValueAtTime(0.0001, now);
+  gain.gain.exponentialRampToValueAtTime(0.018, now + 0.04);
+  gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.72);
+
+  osc.connect(gain);
+  gain.connect(audioContext.destination);
+
+  osc.start(now);
+  osc.stop(now + 0.75);
+
+  musicStep++;
+}
+
+function startMusic() {
+
+  if (!musicEnabled)
+    return;
+
+  initAudio();
+
+  clearInterval(musicTimer);
+
+  musicStep = 0;
+
+  playMusicNote();
+
+  musicTimer =
+    setInterval(
+      playMusicNote,
+      760
+    );
+
+}
+
+function stopMusic() {
+
+  clearInterval(musicTimer);
+
+  musicTimer = null;
+
+}
+
+function toggleMusic() {
+
+  musicEnabled = !musicEnabled;
+
+  musicToggle.textContent =
+    musicEnabled
+      ? "♪ MUSIC ON"
+      : "♪ MUSIC OFF";
+
+  musicToggle.classList.toggle(
+    "off",
+    !musicEnabled
+  );
+
+  if (
+    musicEnabled &&
+    gameRunning
+  ) {
+
+    startMusic();
+
+  } else {
+
+    stopMusic();
+
+  }
+
+}
 
 /* TAP SOUND */
 
@@ -927,6 +1136,11 @@ const playAgainButton =
     "playAgainButton"
   );
 
+const musicToggle =
+  document.getElementById(
+    "musicToggle"
+  );
+
 
 button.style.display =
   "none";
@@ -939,6 +1153,8 @@ button.style.display =
 function startGame() {
 
   initAudio();
+
+  startMusic();
 
   score = 0;
 
@@ -1259,34 +1475,41 @@ function levelUp() {
 
   levelSound();
 
+  const messages = {
+    2: "Lovely! Keep going.",
+    3: "Wonderful! You're getting good.",
+    4: "Amazing! Stay focused.",
+    5: "Impressive! Don't get comfy.",
+    6: "Incredible! You're on fire."
+  };
 
   levelFlash.classList.remove(
     "flash"
   );
 
-
   levelMessage.classList.remove(
     "levelMessage"
   );
 
-
   void levelFlash.offsetWidth;
-
 
   levelFlash.classList.add(
     "flash"
   );
 
-
-  levelMessage.textContent =
-    "LEVEL " +
-    currentLevel;
-
+  levelMessage.innerHTML =
+    "<strong>LEVEL " +
+    currentLevel +
+    "</strong><br><small>" +
+    (
+      messages[currentLevel] ||
+      "You're still going. Incredible!"
+    ) +
+    "</small>";
 
   levelMessage.classList.add(
     "levelMessage"
   );
-
 
   if (
     currentLevel >= 2
@@ -1605,17 +1828,21 @@ function createRabbit() {
 
   const rabbit =
     document.createElement(
-      "div"
+      "img"
     );
-
 
   rabbit.className =
     "rabbit";
 
+  rabbit.alt = "Rabbit";
+  rabbit.draggable = false;
+  rabbit.src = "assets/rabbit.png";
 
-  rabbit.textContent =
-    "🐇";
-
+  rabbit.addEventListener(
+    "error",
+    () => rabbit.remove(),
+    { once: true }
+  );
 
   const y =
     170 +
@@ -1625,10 +1852,8 @@ function createRabbit() {
       260
     );
 
-
   rabbit.style.top =
     y + "px";
-
 
   rabbit.style.left =
     (
@@ -1636,21 +1861,17 @@ function createRabbit() {
       80
     ) + "px";
 
-
   document
     .getElementById("game")
     .appendChild(
       rabbit
     );
 
-
   rabbits.push(
     rabbit
   );
 
-
   rabbitSound();
-
 
   const speed =
     Math.max(
@@ -1658,7 +1879,6 @@ function createRabbit() {
       4300 -
       currentLevel * 400
     );
-
 
   const animation =
     rabbit.animate(
@@ -1707,12 +1927,10 @@ function createRabbit() {
 
     );
 
-
   animation.onfinish =
     () => {
 
       rabbit.remove();
-
 
       rabbits =
         rabbits.filter(
@@ -1748,6 +1966,8 @@ function endGame() {
     !gameRunning
   )
     return;
+
+  stopMusic();
 
 
   gameRunning =
@@ -1840,6 +2060,11 @@ startButton.addEventListener(
 playAgainButton.addEventListener(
   "click",
   startGame
+);
+
+musicToggle.addEventListener(
+  "click",
+  toggleMusic
 );
 
 </script>
