@@ -1413,72 +1413,78 @@ function createTraps() {
 
 function createTrap() {
 
-  const trap =
-    document.createElement(
-      "button"
-    );
+function createTrap() {
 
+  const trap = document.createElement("button");
 
-  trap.className =
-    "trap";
+  trap.className = "trap";
+  trap.textContent = "TAP";
 
+  const margin = 90;
 
-  trap.textContent =
-    "TAP";
+  let x;
+  let y;
 
+  let safe = false;
 
-  const margin = 75;
+  /*
+    Tuzak gerçek TAP'a
+    çok yaklaşmayacak.
+  */
 
+  while (!safe) {
 
-  const x =
-    margin +
-    Math.random() *
-    (
-      window.innerWidth -
-      margin * 2
-    );
+    x =
+      margin +
+      Math.random() *
+      (window.innerWidth - margin * 2);
 
+    y =
+      170 +
+      Math.random() *
+      (window.innerHeight - 260);
 
-  const y =
-    165 +
-    Math.random() *
-    (
-      window.innerHeight -
-      235
-    );
+    const tapX =
+      parseFloat(button.style.left);
 
+    const tapY =
+      parseFloat(button.style.top);
+
+    const distance =
+      Math.hypot(
+        x - tapX,
+        y - tapY
+      );
+
+    safe =
+      distance > 180;
+
+  }
 
   trap.style.left =
     x + "px";
 
-
   trap.style.top =
     y + "px";
 
-
   trap.addEventListener(
     "click",
-    () => {
+    function(event) {
 
-      if (
-        gameRunning
-      ) {
+      event.stopPropagation();
 
+      if (gameRunning) {
         endGame();
-
       }
 
     }
   );
 
-
   document
     .getElementById("game")
     .appendChild(trap);
 
-
   traps.push(trap);
-
 }
 
 
@@ -1815,7 +1821,15 @@ function endGame() {
 
 button.addEventListener(
   "click",
-  tapCorrectButton
+
+  function(event) {
+
+    event.stopPropagation();
+
+    tapCorrectButton();
+
+  }
+
 );
 
 
